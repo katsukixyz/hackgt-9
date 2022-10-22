@@ -9,7 +9,5 @@
       "matches": ["https://calendar.google.com/calendar/u/*/r*"]
     }
   ],
-  "permissions": [
-    "geolocation"
-  ]
+  "permissions": ["geolocation"]
 }
