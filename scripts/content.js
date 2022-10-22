@@ -93,6 +93,20 @@ const listenForEvent = () => {
     weatherPopup.style.borderRadius = "8px";
     weatherPopup.classList.add("weatherPopup");
 
+    //initial leftRight styling
+    let element = document.querySelector(".RDlrG");
+    let bodyRect = document.body.getBoundingClientRect();
+    let elemRect = element.getBoundingClientRect();
+    let offset = elemRect.left - bodyRect.left;
+
+    if (offset <= 270) {
+        weatherPopup.style.removeProperty("left");
+        weatherPopup.style.right = "-210px";
+    } else {
+        weatherPopup.style.removeProperty("right");
+        weatherPopup.style.left = "-210px";
+    }
+
     //Adding hour elements to the pop up
     let hourW = document.createElement("p");
     hourW.textContent = "Temp, Percent chance";
