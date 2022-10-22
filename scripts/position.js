@@ -9,10 +9,11 @@ const checkPosition = () => {
             const weatherPopup = document.querySelector(".weatherPopup");
             if (offset <= 270) {
                 weatherPopup.style.removeProperty("left");
-                weatherPopup.style.right = "-210px";
+                weatherPopup.style.right = "-220px";
+                //console.log(weatherPopup.offsetParent);
             } else {
                 weatherPopup.style.removeProperty("right");
-                weatherPopup.style.left = "-210px";
+                weatherPopup.style.left = "-220px";
             }
         }
     }

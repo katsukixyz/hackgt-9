@@ -91,6 +91,7 @@ const listenForEvent = () => {
     const dialogPopup = document.querySelector(".RDlrG");
     dialogPopup.style.overflowX = "visible";
     dialogPopup.style.overflowY = "visible";
+    dialogPopup.style.position = "relative";
 
     const dateElements = document.querySelectorAll(".ky6s2b");
     const titleElement = document.querySelector(".mvRfff");
@@ -120,10 +121,10 @@ const listenForEvent = () => {
 
     if (offset <= 270) {
         weatherPopup.style.removeProperty("left");
-        weatherPopup.style.right = "-210px";
+        weatherPopup.style.right = "-220px";
     } else {
         weatherPopup.style.removeProperty("right");
-        weatherPopup.style.left = "-210px";
+        weatherPopup.style.left = "-220px";
     }
 
     weatherPopup.style.pointerEvents = "visible";
