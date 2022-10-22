@@ -6,7 +6,7 @@
   "content_scripts": [
     {
       "js": ["scripts/content.js"],
-      "matches": ["https://calendar.google.com/calendar/u/*/r/week*"]
+      "matches": ["https://calendar.google.com/calendar/u/*/r*"]
     }
   ]
 }
