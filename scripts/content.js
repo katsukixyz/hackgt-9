@@ -9,13 +9,32 @@ setTimeout(() => {
         const dateElements = document.querySelectorAll(".ky6s2b");
         const titleElement = document.querySelector(".mvRfff");
 
+        //weatherPopup styling
         const weatherPopup = document.createElement("div");
         weatherPopup.style.position = "absolute";
         weatherPopup.style.padding = "20px";
+        weatherPopup.style.height = "250px";
+        weatherPopup.style.width = "180px";
         weatherPopup.style.zIndex = 20;
-        weatherPopup.style.backgroundColor = "blue";
-        weatherPopup.style.left = "-30px";
+        weatherPopup.style.backgroundColor = "lightblue";
+        weatherPopup.style.left = "-210px";
+        weatherPopup.style.display = "flex";
+        weatherPopup.style.flexDirection = "column";
+        weatherPopup.style.overflow = "auto";
+        weatherPopup.style.borderRadius = "8px";
 
+        //Adding hour elements to the pop up
+        let hourW = document.createElement("p");
+        hourW.textContent = "Temp, Percent chance";
+        weatherPopup.appendChild(hourW);
+
+        for (let i = 0; i < 15; i++) {
+          hourW = document.createElement("p");
+          hourW.textContent = "Temp, Percent chance";
+          weatherPopup.appendChild(hourW);
+        }
+
+        //Weather button styling
         const weatherButton = document.createElement("button");
         weatherButton.textContent = "JOEJOEJOEJOE";
         weatherButton.style.position = "absolute";
