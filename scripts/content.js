@@ -166,6 +166,7 @@ const listenForEvent = async () => {
       icon.style.display = "flex";
       icon.style.flexDirection = "column";
       icon.style.alignItems = "center";
+      icon.style.height = "40px";
 
       const roundedPrecip = Math.floor(Math.round(hPrecip) / 10) * 10;
 
