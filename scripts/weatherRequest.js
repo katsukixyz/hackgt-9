@@ -1,16 +1,14 @@
-const printCoords = async (locationInput) => {
+const getCoords = async (locationInput) => {
 
     locURL = "https://nominatim.openstreetmap.org/search?q=" + locationInput.replace(" ", "+") + "&format=xml&addressdetails=1"
     const location = await fetch(locURL)
         .then(response => response.text())
         .then(str => new DOMParser().parseFromString(str, "text/xml"));
     
-    let coordinate = new Array();
-    const lat = location.getElementsByTagName("place")[0].getAttribute("lat");
-    coordinate.push(lat);
-    const lon = location.getElementsByTagName("place")[0].getAttribute("lon");
-    coordinate.push(lon);
-    return coordinate;
+    const lat = parseFloat(location.getElementsByTagName("place")[0].getAttribute("lat"));
+    const lon = parseFloat(location.getElementsByTagName("place")[0].getAttribute("lon"));
+
+    return [lat, lon];
 }
 
 const printWeather = async (latitude, longitude) => {
@@ -56,4 +54,4 @@ navigator.geolocation.getCurrentPosition(position => {
     printWeather(latitude, longitude).then((data) => console.log(data));
 });
 
-printCoords("Atlanta, GA").then(data => console.log(data));
+getCoords("Mooresville, NC").then(([lat, lon]) => printWeather(lat, lon)).then((data) => console.log(data));
