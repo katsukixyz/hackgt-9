@@ -69,10 +69,10 @@ const printWeather = async (latitude, longitude) => {
 
   for (let i = 0; i < time.length; i++) {
     let curTime = time[i].slice(11, 13);
-    if (time[i].slice(0, 10) in dict == false) {
-      dict[time[i].slice(0, 10)] = new Array();
+    if (time[i].slice(5, 10) in dict == false) {
+      dict[time[i].slice(5, 10)] = new Array();
     }
-    dict[time[i].slice(0, 10)].push([curTime, temperature[i], precip[i]]);
+    dict[time[i].slice(5, 10)].push([curTime, temperature[i], precip[i]]);
   }
   return dict;
 };
@@ -86,7 +86,7 @@ const getCurrentLocation = new Promise((resolve, reject) => {
 
 exists = false;
 
-const listenForEvent = () => {
+const listenForEvent = async () => {
   if (document.querySelector(".RDlrG") && !exists) {
     const dialogPopup = document.querySelector(".RDlrG");
     dialogPopup.style.overflowX = "visible";
@@ -111,22 +111,30 @@ const listenForEvent = () => {
     weatherPopup.style.overflow = "auto";
     weatherPopup.style.pointerEvents = "visible";
 
-    //Adding hour elements to the pop up
-    const hourArray = [];
-    for (let i = 0; i < 24; i++) {
-      hourArray.push([i, 30]);
-    }
+    const date = new Date(dateElements[0].textContent.split(", ")[1]);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    const weekData = await getCurrentLocation;
+    const dayData = weekData[`${month < 10 ? "0" + month : month}-${day}`];
 
     const dayW = document.createElement("div");
-    hourArray.forEach((hour) => {
+    dayData.forEach((hour) => {
+      const [hIndex, hTemp, hPrecip] = hour;
+
       const hourW = document.createElement("div");
       hourW.style.display = "flex";
       hourW.style.flexDirection = "row";
       hourW.style.alignItems = "center";
       hourW.style.justifyContent = "space-between";
 
+      const parsedH = parseInt(hIndex);
+      const am = parsedH < 12;
+
       const time = document.createElement("p");
-      time.textContent = "2:00pm";
+      time.textContent = `${
+        am ? (parsedH === 0 ? "12" : parsedH) : parsedH - 12
+      } ${am ? "AM" : "PM"}`;
 
       const icon = document.createElement("div");
       icon.style.display = "flex";
@@ -144,12 +152,12 @@ const listenForEvent = () => {
       iconPercent.style.border = "none";
       iconPercent.style.padding = 0;
       iconPercent.style.margin = 0;
-      iconPercent.textContent = "30%";
+      iconPercent.textContent = `${hPrecip}%`;
       icon.appendChild(iconImage);
       icon.appendChild(iconPercent);
 
       const temp = document.createElement("p");
-      temp.textContent = "47°";
+      temp.textContent = `${hTemp}°`;
 
       hourW.appendChild(time);
       hourW.appendChild(icon);
@@ -174,11 +182,6 @@ const listenForEvent = () => {
     });
 
     titleElement.appendChild(weatherButton);
-
-    const date = new Date(dateElements[0].textContent.split(", ")[1]);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    console.log(month, day);
     exists = true;
   } else {
     if (!document.querySelector(".RDlrG")) {
