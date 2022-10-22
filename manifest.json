@@ -5,7 +5,7 @@
   "description": "🌦",
   "content_scripts": [
     {
-      "js": ["scripts/content.js"],
+      "js": ["scripts/content.js", "scripts/weatherRequest.js"],
       "matches": ["https://calendar.google.com/calendar/u/*/r/week*"]
     }
   ]
