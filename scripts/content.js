@@ -77,17 +77,24 @@ const printWeather = async (latitude, longitude) => {
   return dict;
 };
 
+exists = false;
+currentLat = 0;
+currentLong = 0;
+
 const getCurrentLocation = new Promise((resolve, reject) => {
-  navigator.geolocation.getCurrentPosition(async (position) => {
+  navigator.geolocation.getCurrentPosition((position) => {
     const { latitude, longitude } = position.coords;
-    resolve(await printWeather(latitude, longitude));
+    resolve([latitude, longitude]);
   });
 });
 
-exists = false;
-
-const listenForEvent = () => {
+const listenForEvent = async () => {
   if (document.querySelector(".RDlrG") && !exists) {
+    [currentLat, currentLong] = await getCurrentLocation.then((data) => data);
+
+    console.log(currentLat);
+    console.log(currentLong);
+
     const dialogPopup = document.querySelector(".RDlrG");
     dialogPopup.style.overflowX = "visible";
     dialogPopup.style.overflowY = "visible";
@@ -199,9 +206,18 @@ const listenForEvent = () => {
     const day = date.getDate();
     console.log(month, day);
     exists = true;
+
+
   } else {
+
+
     if (!document.querySelector(".RDlrG")) {
       exists = false;
+    } else {
+      const textBox = document.querySelector('[aria-label="Location"]');
+      textBox.addEventListener('input', (e) => {
+        console.log(e)
+      })
     }
   }
 
