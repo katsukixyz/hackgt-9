@@ -1,12 +1,10 @@
+const printWeather = async (latitude, longitude) => {
+    url = "https://forecast.weather.gov/MapClick.php?" + "lat=" + latitude.toFixed(4) + "&lon=" + longitude.toFixed(4) + "&FcstType=digitalDWML";
 
-
-const xmlReturn = fetch('https://forecast.weather.gov/MapClick.php?lat=34.7749&lon=-81.9526&FcstType=digitalDWML')
-    .then(response => response.text())
-    .then(str => new DOMParser().parseFromString(str, "text/xml"))
-
-const printWeather = async () => {
     // get xml of website with data
-    const weather = await xmlReturn;
+    const weather = await fetch(url)
+            .then(response => response.text())
+            .then(str => new DOMParser().parseFromString(str, "text/xml"));
     
     let time = new Array();
 
@@ -38,4 +36,8 @@ const printWeather = async () => {
     return combined;
 }
 
-printWeather().then((data) => console.log(data));
+navigator.geolocation.getCurrentPosition(position => {
+    const { latitude, longitude } = position.coords;
+    printWeather(latitude, longitude).then((data) => console.log(data));
+});
+
