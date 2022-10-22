@@ -24,14 +24,19 @@ setTimeout(() => {
         weatherPopup.style.borderRadius = "8px";
 
         //Adding hour elements to the pop up
+        const hourArray = [];
+        for (let i = 0; i < 24; i++) {
+          hourArray.push([i, 30]);
+        }
+
         let hourW = document.createElement("p");
-        hourW.textContent = "Temp, Percent chance";
+        hourW.textContent = hourArray[0][0] + "F " + hourArray[0][1] + "% chance";
         weatherPopup.appendChild(hourW);
 
-        for (let i = 0; i < 15; i++) {
+        for (let i = 1; i < 24; i++) {
           hourW = document.createElement("p");
-          hourW.textContent = "Temp, Percent chance";
-          weatherPopup.appendChild(hourW);
+        hourW.textContent = hourArray[i][0] + "F " + hourArray[i][1] + "% chance";
+        weatherPopup.appendChild(hourW);
         }
 
         //Weather button styling
@@ -40,7 +45,7 @@ setTimeout(() => {
         weatherButton.style.position = "absolute";
         weatherButton.style.background = "rgba(255, 122, 89, 0)";
         weatherButton.style.borderStyle = "none";
-        weatherButton.style.bottom = "400px";
+        weatherButton.style.top = "100px";
         weatherButton.style.left = "20px";
         weatherButton.addEventListener("click", (wClickEvent) => {
           titleElement.appendChild(weatherPopup);
