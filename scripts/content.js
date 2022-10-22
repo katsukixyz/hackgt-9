@@ -36,9 +36,12 @@ setTimeout(() => {
 
         //Weather button styling
         const weatherButton = document.createElement("button");
-        weatherButton.textContent = "JOEJOEJOEJOE";
+        weatherButton.textContent = "☁️";
         weatherButton.style.position = "absolute";
-        weatherButton.style.left = "30px";
+        weatherButton.style.background = "rgba(255, 122, 89, 0)";
+        weatherButton.style.borderStyle = "none";
+        weatherButton.style.bottom = "400px";
+        weatherButton.style.left = "20px";
         weatherButton.addEventListener("click", (wClickEvent) => {
           titleElement.appendChild(weatherPopup);
         });
