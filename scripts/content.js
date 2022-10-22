@@ -1,3 +1,5 @@
+import { printCoords, printWeather, getCurrentLocation } from './weatherRequest.js';
+
 setTimeout(() => {
   const calendar = document.querySelector('[jscontroller="JjlYBf"]');
   console.log(calendar);
@@ -30,6 +32,7 @@ setTimeout(() => {
 
         for (let i = 0; i < 15; i++) {
           hourW = document.createElement("p");
+          getCurrentLocation().then(data => data[i]);
           hourW.textContent = "Temp, Percent chance";
           weatherPopup.appendChild(hourW);
         }

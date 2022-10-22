@@ -51,9 +51,16 @@ const printWeather = async (latitude, longitude) => {
     return combined;
 }
 
-navigator.geolocation.getCurrentPosition(position => {
-    const { latitude, longitude } = position.coords;
-    printWeather(latitude, longitude).then((data) => console.log(data));
-});
+function success(position) {
+    const crd = position.coords;
 
-printCoords("Atlanta, GA").then(data => console.log(data));
+}
+
+const getCurrentLocation = async () => {
+    return navigator.geolocation.getCurrentPosition(success);
+}
+console.log("temp");
+getCurrentLocation();
+//printCoords("Atlanta, GA").then(data => console.log(data));
+
+export { printCoords, printWeather, getCurrentLocation };
