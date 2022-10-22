@@ -91,6 +91,7 @@ const listenForEvent = () => {
     weatherPopup.style.flexDirection = "column";
     weatherPopup.style.overflow = "auto";
     weatherPopup.style.borderRadius = "8px";
+    weatherPopup.classList.add("weatherPopup");
 
     //Adding hour elements to the pop up
     let hourW = document.createElement("p");
@@ -109,6 +110,7 @@ const listenForEvent = () => {
     weatherButton.style.borderStyle = "none";
     weatherButton.style.bottom = "400px";
     weatherButton.style.left = "20px";
+    weatherButton.style.zIndex = "20";
     weatherButton.addEventListener("click", (wClickEvent) => {
       titleElement.appendChild(weatherPopup);
     });
