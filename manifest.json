@@ -14,5 +14,6 @@
       "matches": ["<all_urls>"],
       "resources": ["images/rain_s_sunny.png"]
     }
-  ]
+  ],
+  "permissions": ["geolocation"]
 }
