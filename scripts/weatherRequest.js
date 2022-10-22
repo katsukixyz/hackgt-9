@@ -13,7 +13,6 @@ const printCoords = async (locationInput) => {
     return coordinate;
 }
 
-// trollll
 const printWeather = async (latitude, longitude) => {
     url = "https://forecast.weather.gov/MapClick.php?" + "lat=" + latitude.toFixed(4) + "&lon=" + longitude.toFixed(4) + "&FcstType=digitalDWML";
 
