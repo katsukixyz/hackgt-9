@@ -8,5 +8,8 @@
       "js": ["scripts/content.js", "scripts/weatherRequest.js"],
       "matches": ["https://calendar.google.com/calendar/u/*/r*"]
     }
+  ],
+  "permissions": [
+    "geolocation"
   ]
 }
