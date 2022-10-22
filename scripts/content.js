@@ -91,6 +91,7 @@ const listenForEvent = async () => {
     const dialogPopup = document.querySelector(".RDlrG");
     dialogPopup.style.overflowX = "visible";
     dialogPopup.style.overflowY = "visible";
+    dialogPopup.style.position = "relative";
 
     const dateElements = document.querySelectorAll(".ky6s2b");
     const titleElement = document.querySelector(".mvRfff");
@@ -109,6 +110,23 @@ const listenForEvent = async () => {
     weatherPopup.style.display = "flex";
     weatherPopup.style.flexDirection = "column";
     weatherPopup.style.overflow = "auto";
+    weatherPopup.style.borderRadius = "8px";
+    weatherPopup.classList.add("weatherPopup");
+
+    //initial leftRight styling
+    let element = document.querySelector(".RDlrG");
+    let bodyRect = document.body.getBoundingClientRect();
+    let elemRect = element.getBoundingClientRect();
+    let offset = elemRect.left - bodyRect.left;
+
+    if (offset <= 270) {
+      weatherPopup.style.removeProperty("left");
+      weatherPopup.style.right = "-220px";
+    } else {
+      weatherPopup.style.removeProperty("right");
+      weatherPopup.style.left = "-220px";
+    }
+
     weatherPopup.style.pointerEvents = "visible";
 
     const date = new Date(dateElements[0].textContent.split(", ")[1]);
