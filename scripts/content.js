@@ -23,6 +23,7 @@ setTimeout(() => {
         weatherPopup.style.flexDirection = "column";
         weatherPopup.style.overflow = "auto";
         weatherPopup.style.borderRadius = "8px";
+        weatherPopup.style.pointerEvents = "visible";
 
         weatherPopup.addEventListener("click", () => console.log("clicked!"));
 
