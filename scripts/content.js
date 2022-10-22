@@ -4,8 +4,9 @@ setTimeout(() => {
   if (calendar) {
     calendar.addEventListener("click", (event) => {
       setTimeout(() => {
-        document.querySelector(".RDlrG").style.overflowX = "visible";
-        document.querySelector(".RDlrG").style.overflowY = "visible";
+        const dialogPopup = document.querySelector(".RDlrG");
+        dialogPopup.style.overflowX = "visible";
+        dialogPopup.style.overflowY = "visible";
         const dateElements = document.querySelectorAll(".ky6s2b");
         const titleElement = document.querySelector(".mvRfff");
 
@@ -15,13 +16,15 @@ setTimeout(() => {
         weatherPopup.style.padding = "20px";
         weatherPopup.style.height = "250px";
         weatherPopup.style.width = "180px";
-        weatherPopup.style.zIndex = 20;
+        weatherPopup.style.zIndex = "20";
         weatherPopup.style.backgroundColor = "lightblue";
         weatherPopup.style.left = "-210px";
         weatherPopup.style.display = "flex";
         weatherPopup.style.flexDirection = "column";
         weatherPopup.style.overflow = "auto";
         weatherPopup.style.borderRadius = "8px";
+
+        weatherPopup.addEventListener("click", () => console.log("clicked!"));
 
         //Adding hour elements to the pop up
         const hourArray = [];
@@ -51,7 +54,7 @@ setTimeout(() => {
         weatherButton.style.top = "100px";
         weatherButton.style.left = "20px";
         weatherButton.addEventListener("click", (wClickEvent) => {
-          titleElement.appendChild(weatherPopup);
+          dialogPopup.appendChild(weatherPopup);
         });
 
         titleElement.appendChild(weatherButton);
