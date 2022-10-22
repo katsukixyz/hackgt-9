@@ -17,7 +17,9 @@ setTimeout(() => {
         weatherPopup.style.height = "250px";
         weatherPopup.style.width = "180px";
         weatherPopup.style.zIndex = "20";
-        weatherPopup.style.backgroundColor = "lightblue";
+        weatherPopup.style.backgroundColor = "white";
+        weatherPopup.style.boxShadow =
+          "0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%), 0px 11px 15px -7px rgb(0 0 0 / 20%)";
         weatherPopup.style.left = "-210px";
         weatherPopup.style.display = "flex";
         weatherPopup.style.flexDirection = "column";
