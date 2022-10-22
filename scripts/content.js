@@ -85,6 +85,7 @@ const getCurrentLocation = new Promise((resolve, reject) => {
 });
 
 exists = false;
+weatherPopupVisible = false;
 
 const listenForEvent = async () => {
   if (document.querySelector(".RDlrG") && !exists) {
@@ -211,7 +212,13 @@ const listenForEvent = async () => {
     weatherButton.style.left = "20px";
 
     weatherButton.addEventListener("click", (wClickEvent) => {
-      dialogPopup.appendChild(weatherPopup);
+      if (weatherPopupVisible) {
+        dialogPopup.removeChild(weatherPopup);
+        weatherPopupVisible = false;
+      } else {
+        dialogPopup.appendChild(weatherPopup);
+        weatherPopupVisible = true;
+      }
     });
 
     titleElement.appendChild(weatherButton);
