@@ -24,6 +24,8 @@ const printWeather = async (latitude, longitude) => {
     longitude.toFixed(4) +
     "&FcstType=digitalDWML";
 
+  let dict = {};
+
   // get xml of website with data
   const weather = await fetch(url)
     .then((response) => response.text())
@@ -55,12 +57,26 @@ const printWeather = async (latitude, longitude) => {
     temperature.push(parseInt(node["innerHTML"]));
   });
 
-  let combined = time.map((e, i) => {
-    return [e, temperature[i], precip[i]];
-  });
+  //let possibleWeather = new Array();
+  //const possibleWeatherValues =
+  //  weather.getElementsByTagName("weather")[0].childNodes;
 
-  return combined;
+  //console.log(latitude);
+  //console.log(possibleWeatherValues);
+  //possibleWeatherValues.forEach((node) => {
+  //  temperature.push(parseInt(node["innerHTML"]));
+  //});
+
+  for (let i = 0; i < time.length; i++) {
+    let curTime = time[i].slice(11,13);
+    if ((time[i].slice(0,10) in dict) == false) {
+      dict[time[i].slice(0,10)] = new Array();
+    }
+    dict[time[i].slice(0,10)].push([curTime, temperature[i], precip[i]]);
+  }
+  return dict;
 };
+
 
 const getCurrentLocation = new Promise((resolve, reject) => {
   navigator.geolocation.getCurrentPosition(async (position) => {
