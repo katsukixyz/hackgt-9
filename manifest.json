@@ -10,7 +10,5 @@
       "js": ["scripts/content.js", "scripts/weatherRequest.js"]
     }
   ],
-  "permissions": [
-    "geolocation"
-  ]
+  "permissions": ["geolocation"]
 }
