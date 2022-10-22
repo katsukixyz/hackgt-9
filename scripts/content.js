@@ -165,6 +165,7 @@ const listenForEvent = async () => {
       const icon = document.createElement("div");
       icon.style.display = "flex";
       icon.style.flexDirection = "column";
+      icon.style.justifyContent = "center";
       icon.style.alignItems = "center";
       icon.style.height = "40px";
 
