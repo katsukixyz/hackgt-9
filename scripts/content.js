@@ -135,11 +135,15 @@ const listenForEvent = async () => {
       time.textContent = `${
         am ? (parsedH === 0 ? "12" : parsedH) : parsedH - 12
       } ${am ? "AM" : "PM"}`;
+      time.style.width = "42px";
+      time.style.textAlign = "right";
 
       const icon = document.createElement("div");
       icon.style.display = "flex";
       icon.style.flexDirection = "column";
       icon.style.alignItems = "center";
+
+      const roundedPrecip = Math.floor(Math.round(hPrecip) / 10) * 10;
 
       const iconImage = document.createElement("img");
       iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
@@ -147,14 +151,17 @@ const listenForEvent = async () => {
       iconImage.style.border = "none";
       iconImage.style.padding = 0;
       iconImage.style.margin = 0;
-      const iconPercent = document.createElement("p");
-      iconPercent.style.fontSize = "12px";
-      iconPercent.style.border = "none";
-      iconPercent.style.padding = 0;
-      iconPercent.style.margin = 0;
-      iconPercent.textContent = `${hPrecip}%`;
       icon.appendChild(iconImage);
-      icon.appendChild(iconPercent);
+
+      if (roundedPrecip > 0) {
+        const iconPercent = document.createElement("p");
+        iconPercent.style.fontSize = "12px";
+        iconPercent.style.border = "none";
+        iconPercent.style.padding = 0;
+        iconPercent.style.margin = 0;
+        iconPercent.textContent = `${roundedPrecip}%`;
+        icon.appendChild(iconPercent);
+      }
 
       const temp = document.createElement("p");
       temp.textContent = `${hTemp}°`;
