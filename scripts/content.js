@@ -202,8 +202,10 @@ const listenForEvent = async () => {
     weatherPopup.appendChild(dayW);
 
     //Weather button styling
-    const weatherButton = document.createElement("button");
-    weatherButton.textContent = "☁️";
+    const weatherButton = document.createElement("img");
+    // weatherButton.textContent = "☁️";
+    weatherButton.src = "images/button.svg";
+
     weatherButton.style.position = "absolute";
     weatherButton.style.background = "rgba(255, 122, 89, 0)";
     weatherButton.style.zIndex = "20";
@@ -226,6 +228,7 @@ const listenForEvent = async () => {
   } else {
     if (!document.querySelector(".RDlrG")) {
       exists = false;
+      weatherPopupVisible = false;
     }
   }
 

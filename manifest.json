@@ -13,7 +13,7 @@
   "web_accessible_resources": [
     {
       "matches": ["<all_urls>"],
-      "resources": ["images/rain_s_sunny.png"]
+      "resources": ["images/*"]
     }
   ],
   "permissions": ["geolocation"]
