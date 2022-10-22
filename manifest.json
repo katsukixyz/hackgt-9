@@ -7,7 +7,7 @@
     {
       "matches": ["https://calendar.google.com/calendar/u/*/r*"],
       "run_at": "document_idle",
-      "js": ["scripts/content.js", "scripts/weatherRequest.js"]
+      "js": ["scripts/content.js"]
     }
   ],
   "permissions": ["geolocation"]
