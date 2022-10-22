@@ -151,7 +151,13 @@ const listenForEvent = async () => {
 
       const time = document.createElement("p");
       time.textContent = `${
-        am ? (parsedH === 0 ? "12" : parsedH) : parsedH - 12
+        am
+          ? parsedH === 0
+            ? "12"
+            : parsedH
+          : parsedH === 12
+          ? parsedH
+          : parsedH - 12
       } ${am ? "AM" : "PM"}`;
       time.style.width = "42px";
       time.style.textAlign = "right";
