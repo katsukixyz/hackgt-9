@@ -1,3 +1,19 @@
+const printCoords = async (locationInput) => {
+
+    locURL = "https://nominatim.openstreetmap.org/search?q=" + locationInput.replace(" ", "+") + "&format=xml&addressdetails=1"
+    const location = await fetch(locURL)
+        .then(response => response.text())
+        .then(str => new DOMParser().parseFromString(str, "text/xml"));
+    
+    let coordinate = new Array();
+    const lat = location.getElementsByTagName("place")[0].getAttribute("lat");
+    coordinate.push(lat);
+    const lon = location.getElementsByTagName("place")[0].getAttribute("lon");
+    coordinate.push(lon);
+    return coordinate;
+}
+
+
 const printWeather = async (latitude, longitude) => {
     url = "https://forecast.weather.gov/MapClick.php?" + "lat=" + latitude.toFixed(4) + "&lon=" + longitude.toFixed(4) + "&FcstType=digitalDWML";
 
@@ -41,3 +57,4 @@ navigator.geolocation.getCurrentPosition(position => {
     printWeather(latitude, longitude).then((data) => console.log(data));
 });
 
+printCoords("Atlanta, GA").then(data => console.log(data));
