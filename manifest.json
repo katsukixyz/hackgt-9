@@ -10,5 +10,11 @@
       "js": ["scripts/content.js", "scripts/position.js"]
     }
   ],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["images/rain_s_sunny.png"]
+    }
+  ],
   "permissions": ["geolocation"]
 }
