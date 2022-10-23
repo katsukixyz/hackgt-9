@@ -1,22 +1,42 @@
+let tZone = 0;
 // day = "YYYY-MM-DD"
 // time = "HH:MM"
 const isDay = (data, time) => {
   let sunrise = data.results.sunrise;
   let sunset = data.results.sunset;
   let riseHour = parseInt(sunrise.split(":")[0]);
+  let half = (sunrise.split(":")[2]).split(" ")[1];
+  if (half === "PM") {
+    riseHour += 12;
+  }
+  console.log(riseHour);
+  riseHour += 24 - tZone;
+  riseHour %= 24;
+  console.log(riseHour);
   let riseMin = parseInt(sunrise.split(":")[1]);
   let setHour = parseInt(sunset.split(":")[0]);
+  half = (sunset.split(":")[2]).split(" ")[1];
+  if (half === "PM") {
+    setHour += 12;
+  }
+  console.log(setHour);
+  setHour += 24 - tZone;
+  setHour %= 24;
   let setMin = parseInt(sunset.split(":")[1]);
   let timeHour = parseInt(time.split(":")[0]);
   let timeMin = parseInt(time.split(":")[1]);
-  //console.log(riseHour, riseMin, setHour, setMin, timeHour, timeMin);
+  console.log(riseHour, riseMin, setHour, setMin, timeHour, timeMin);
+  console.log("----");
   if (riseHour < timeHour && timeHour < setHour) {
+    console.log("t1");
     return true;
   }
   if (riseHour == timeHour && riseMin < timeMin) {
+    console.log("t2");
     return true;
   }
   if (timeHour == setHour && timeMin < setMin) {
+    console.log("t3");
     return true;
   }
   return false;
@@ -100,6 +120,8 @@ const printWeather = async (latitude, longitude) => {
 
   for (let i = 0; i < time.length; i++) {
     let curTime = time[i].slice(11, 13);
+    tZone = parseInt(time[i].slice(20, 22));
+    console.log(time[i].slice(20, 22));
     if (time[i].slice(5, 10) in dict == false) {
       dict[time[i].slice(5, 10)] = new Array();
     }
@@ -198,13 +220,40 @@ const updateWeather = async () => {
       const roundedPrecip = Math.floor(Math.round(hPrecip) / 10) * 10;
 
       const iconImage = document.createElement("img");
-      if (roundedPrecip <= 50 && roundedPrecip >= 10) {
-        iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
-      } else if (roundedPrecip === 0) {
+      //hCloud, hIsDay
+      
+      /*
+      if (hIsDay) {
         iconImage.src = chrome.runtime.getURL("images/sunny.png");
       } else {
+        iconImage.src = chrome.runtime.getURL("images/night.png");
+      }*/
+      
+      if (roundedPrecip >= 60) {
         iconImage.src = chrome.runtime.getURL("images/rain.png");
+      } else if (roundedPrecip >= 30) {
+        if (hIsDay) {
+          iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
+        } else {
+          iconImage.src = chrome.runtime.getURL("images/rain_night.png");
+        }
+      } else if (hCloud >= 70) {
+        iconImage.src = chrome.runtime.getURL("images/cloudy.png");
+      } else if (hCloud >= 30) {
+        if (hIsDay) {
+          iconImage.src = chrome.runtime.getURL("images/partly_cloudy.png");
+        } else {
+          iconImage.src = chrome.runtime.getURL("images/cloudy_night.png");
+        }
+      } else {
+        if (hIsDay) {
+          iconImage.src = chrome.runtime.getURL("images/sunny.png");
+        } else {
+          iconImage.src = chrome.runtime.getURL("images/night.png");
+        }
       }
+      
+
 
       iconImage.style.height = "25px";
       iconImage.style.border = "none";
