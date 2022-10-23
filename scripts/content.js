@@ -6,13 +6,14 @@ const printCoords = async (locationInput) => {
   const location = await fetch(locURL)
     .then((response) => response.text())
     .then((str) => new DOMParser().parseFromString(str, "text/xml"));
-
-  let coordinate = new Array();
-  const lat = location.getElementsByTagName("place")[0].getAttribute("lat");
-  coordinate.push(lat);
-  const lon = location.getElementsByTagName("place")[0].getAttribute("lon");
-  coordinate.push(lon);
-  return coordinate;
+  
+  if (location.getElementsByTagName("place").length === 0) {
+    return null;
+  } else {
+    const lat = location.getElementsByTagName("place")[0].getAttribute("lat");
+    const lon = location.getElementsByTagName("place")[0].getAttribute("lon");
+    return [lat, lon];
+  }
 };
 
 const printWeather = async (latitude, longitude) => {
@@ -77,10 +78,15 @@ const printWeather = async (latitude, longitude) => {
   return dict;
 };
 
+edited = false;
+exists = false;
+currentLat = 0;
+currentLong = 0;
+
 const getCurrentLocation = new Promise((resolve, reject) => {
-  navigator.geolocation.getCurrentPosition(async (position) => {
+  navigator.geolocation.getCurrentPosition((position) => {
     const { latitude, longitude } = position.coords;
-    resolve(await printWeather(latitude, longitude));
+    resolve([latitude, longitude]);
   });
 });
 
@@ -89,6 +95,8 @@ weatherPopupVisible = false;
 
 const listenForEvent = async () => {
   if (document.querySelector(".RDlrG") && !exists) {
+    [currentLat, currentLong] = await getCurrentLocation.then((data) => data);
+
     const dialogPopup = document.querySelector(".RDlrG");
     dialogPopup.style.overflowX = "visible";
     dialogPopup.style.overflowY = "visible";
@@ -225,10 +233,34 @@ const listenForEvent = async () => {
 
     titleElement.appendChild(weatherButton);
     exists = true;
+
+
   } else {
+
+
     if (!document.querySelector(".RDlrG")) {
       exists = false;
+    } else {
+      const textBox = document.querySelector('[aria-label="Location"]');
+      
+      if (edited && textBox.ariaExpanded === "false" && textBox.value) {
+        
+        let address = textBox.value.split(", ");
+        while (address.length > 4) {
+          address.shift();
+        }
+
+        console.log(address.join(", "));
+
+        let coord = await printCoords(address.join(", "));
+        if (coord) {
+          [currentLat, currentLong] = coord
+        }
+        edited = false;
+      }
+      edited = textBox.ariaExpanded === "true";
       weatherPopupVisible = false;
+
     }
   }
 
