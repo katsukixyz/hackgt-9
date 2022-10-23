@@ -45,6 +45,8 @@ const printCoords = async (locationInput) => {
 };
 
 const printWeather = async (latitude, longitude) => {
+  console.log(latitude);
+  console.log(longitude);
   url =
     "https://forecast.weather.gov/MapClick.php?" +
     "lat=" +
@@ -155,78 +157,83 @@ const updateWeather = async () => {
 
   const sunsetRes = await fetch(dayFetchUrl);
   const sunsetData = await sunsetRes.json();
-  dayData.forEach((hour) => {
-    hour.push(isDay(sunsetData, hour[0] + ":00"));
-  });
+  
+ 
+  if (dayData != undefined) {
+    dayData.forEach((hour) => {
+      hour.push(isDay(sunsetData, hour[0] + ":00"));
+    });
 
-  dayData.forEach((hour) => {
-    const [hIndex, hTemp, hPrecip, hCloud, hIsDay] = hour;
+    dayData.forEach((hour) => {
+      const [hIndex, hTemp, hPrecip, hCloud, hIsDay] = hour;
 
-    const hourW = document.createElement("div");
-    hourW.style.display = "flex";
-    hourW.style.flexDirection = "row";
-    hourW.style.alignItems = "center";
-    hourW.style.justifyContent = "space-between";
+      const hourW = document.createElement("div");
+      hourW.style.display = "flex";
+      hourW.style.flexDirection = "row";
+      hourW.style.alignItems = "center";
+      hourW.style.justifyContent = "space-between";
 
-    const parsedH = parseInt(hIndex);
-    const am = parsedH < 12;
+      const parsedH = parseInt(hIndex);
+      const am = parsedH < 12;
 
-    const time = document.createElement("p");
-    time.textContent = `${
-      am
-        ? parsedH === 0
-          ? "12"
-          : parsedH
-        : parsedH === 12
-        ? parsedH
-        : parsedH - 12
-    } ${am ? "AM" : "PM"}`;
-    time.style.width = "42px";
-    time.style.textAlign = "right";
+      const time = document.createElement("p");
+      time.textContent = `${
+        am
+          ? parsedH === 0
+            ? "12"
+            : parsedH
+          : parsedH === 12
+          ? parsedH
+          : parsedH - 12
+      } ${am ? "AM" : "PM"}`;
+      time.style.width = "42px";
+      time.style.textAlign = "right";
 
-    const icon = document.createElement("div");
-    icon.style.display = "flex";
-    icon.style.flexDirection = "column";
-    icon.style.justifyContent = "center";
-    icon.style.alignItems = "center";
-    icon.style.height = "40px";
+      const icon = document.createElement("div");
+      icon.style.display = "flex";
+      icon.style.flexDirection = "column";
+      icon.style.justifyContent = "center";
+      icon.style.alignItems = "center";
+      icon.style.height = "40px";
 
-    const roundedPrecip = Math.floor(Math.round(hPrecip) / 10) * 10;
+      const roundedPrecip = Math.floor(Math.round(hPrecip) / 10) * 10;
 
-    const iconImage = document.createElement("img");
-    if (roundedPrecip <= 50 && roundedPrecip >= 10) {
-      iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
-    } else if (roundedPrecip === 0) {
-      iconImage.src = chrome.runtime.getURL("images/sunny.png");
-    } else {
-      iconImage.src = chrome.runtime.getURL("images/rain.png");
-    }
+      const iconImage = document.createElement("img");
+      if (roundedPrecip <= 50 && roundedPrecip >= 10) {
+        iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
+      } else if (roundedPrecip === 0) {
+        iconImage.src = chrome.runtime.getURL("images/sunny.png");
+      } else {
+        iconImage.src = chrome.runtime.getURL("images/rain.png");
+      }
 
-    iconImage.style.height = "25px";
-    iconImage.style.border = "none";
-    iconImage.style.padding = 0;
-    iconImage.style.margin = 0;
-    icon.appendChild(iconImage);
 
-    if (roundedPrecip > 0) {
-      const iconPercent = document.createElement("p");
-      iconPercent.style.fontSize = "12px";
-      iconPercent.style.border = "none";
-      iconPercent.style.padding = 0;
-      iconPercent.style.margin = 0;
-      iconPercent.textContent = `${roundedPrecip}%`;
-      icon.appendChild(iconPercent);
-    }
+      iconImage.style.height = "25px";
+      iconImage.style.border = "none";
+      iconImage.style.padding = 0;
+      iconImage.style.margin = 0;
+      icon.appendChild(iconImage);
 
-    const temp = document.createElement("p");
-    temp.textContent = `${hTemp}°`;
+      if (roundedPrecip > 0) {
+        const iconPercent = document.createElement("p");
+        iconPercent.style.fontSize = "12px";
+        iconPercent.style.border = "none";
+        iconPercent.style.padding = 0;
+        iconPercent.style.margin = 0;
+        iconPercent.textContent = `${roundedPrecip}%`;
+        icon.appendChild(iconPercent);
+      }
 
-    hourW.appendChild(time);
-    hourW.appendChild(icon);
-    hourW.appendChild(temp);
+      const temp = document.createElement("p");
+      temp.textContent = `${hTemp}°`;
 
-    dayW.appendChild(hourW);
-  });
+      hourW.appendChild(time);
+      hourW.appendChild(icon);
+      hourW.appendChild(temp);
+
+      dayW.appendChild(hourW);
+    });
+  }
 
   return dayW;
 };
@@ -238,6 +245,16 @@ const updatePopup = async () => {
   dialogPopup.style.position = "relative";
 
   const titleElement = document.querySelector(".mvRfff");
+  const dateElement = document.querySelector(".ky6s2b");
+  const observerOptions = {
+    attributes: true
+  }
+
+  const observer = new MutationObserver(async (mutationList, observer) => {
+    weatherPopup.removeChild(weatherPopup.firstChild);
+    weatherPopup.appendChild(await updateWeather());
+  });
+  observer.observe(dateElement, observerOptions);
 
   //weatherPopup styling
   weatherPopup = document.createElement("div");
@@ -315,6 +332,11 @@ const listenForEvent = async () => {
       const textBox = document.querySelector('[aria-label="Location"]');
 
       if (edited && textBox.ariaExpanded === "false" && textBox.value) {
+
+        
+        await new Promise(r => setTimeout(r, 100));
+
+
         let address = textBox.value.split(", ");
         while (address.length > 4) {
           address.shift();
@@ -325,6 +347,8 @@ const listenForEvent = async () => {
         let coord = await printCoords(address.join(", "));
         if (coord) {
           [currentLat, currentLong] = coord;
+          console.log(weatherPopup);
+
           weatherPopup.removeChild(weatherPopup.firstChild);
           weatherPopup.appendChild(await updateWeather());
         }
@@ -338,3 +362,4 @@ const listenForEvent = async () => {
 };
 
 listenForEvent();
+
