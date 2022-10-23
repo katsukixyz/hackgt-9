@@ -157,8 +157,7 @@ const updateWeather = async () => {
 
   const sunsetRes = await fetch(dayFetchUrl);
   const sunsetData = await sunsetRes.json();
-  
- 
+
   if (dayData != undefined) {
     dayData.forEach((hour) => {
       hour.push(isDay(sunsetData, hour[0] + ":00"));
@@ -207,7 +206,6 @@ const updateWeather = async () => {
         iconImage.src = chrome.runtime.getURL("images/rain.png");
       }
 
-
       iconImage.style.height = "25px";
       iconImage.style.border = "none";
       iconImage.style.padding = 0;
@@ -247,8 +245,8 @@ const updatePopup = async () => {
   const titleElement = document.querySelector(".mvRfff");
   const dateElement = document.querySelector(".ky6s2b");
   const observerOptions = {
-    attributes: true
-  }
+    attributes: true,
+  };
 
   const observer = new MutationObserver(async (mutationList, observer) => {
     weatherPopup.removeChild(weatherPopup.firstChild);
@@ -295,15 +293,26 @@ const updatePopup = async () => {
 
   //Weather button styling
   const weatherButton = document.createElement("img");
-  // weatherButton.textContent = "☁️";
-  weatherButton.src = "images/button.svg";
+  weatherButton.src = chrome.runtime.getURL("images/button.png");
 
   weatherButton.style.position = "absolute";
+  weatherButton.style.height = "22px";
+  weatherButton.style.width = "22px";
   weatherButton.style.background = "rgba(255, 122, 89, 0)";
   weatherButton.style.zIndex = "20";
   weatherButton.style.borderStyle = "none";
   weatherButton.style.top = "100px";
-  weatherButton.style.left = "20px";
+  weatherButton.style.left = "16px";
+  weatherButton.style.padding = "8px";
+  weatherButton.style.borderRadius = "6px";
+  weatherButton.addEventListener("mouseover", () => {
+    weatherButton.style.background = "#F7F6F6";
+    weatherButton.style.cursor = "pointer";
+  });
+  weatherButton.addEventListener("mouseleave", () => {
+    weatherButton.style.background = "rgba(255, 122, 89, 0)";
+    weatherButton.style.cursor = "auto";
+  });
 
   weatherButton.addEventListener("click", (wClickEvent) => {
     if (weatherPopupVisible) {
@@ -332,10 +341,7 @@ const listenForEvent = async () => {
       const textBox = document.querySelector('[aria-label="Location"]');
 
       if (edited && textBox.ariaExpanded === "false" && textBox.value) {
-
-        
-        await new Promise(r => setTimeout(r, 100));
-
+        await new Promise((r) => setTimeout(r, 100));
 
         let address = textBox.value.split(", ");
         while (address.length > 4) {
@@ -362,4 +368,3 @@ const listenForEvent = async () => {
 };
 
 listenForEvent();
-
