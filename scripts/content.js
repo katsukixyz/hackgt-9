@@ -6,13 +6,14 @@ const printCoords = async (locationInput) => {
   const location = await fetch(locURL)
     .then((response) => response.text())
     .then((str) => new DOMParser().parseFromString(str, "text/xml"));
-
-  let coordinate = new Array();
-  const lat = location.getElementsByTagName("place")[0].getAttribute("lat");
-  coordinate.push(lat);
-  const lon = location.getElementsByTagName("place")[0].getAttribute("lon");
-  coordinate.push(lon);
-  return coordinate;
+  
+  if (location.getElementsByTagName("place").length === 0) {
+    return null;
+  } else {
+    const lat = location.getElementsByTagName("place")[0].getAttribute("lat");
+    const lon = location.getElementsByTagName("place")[0].getAttribute("lon");
+    return [lat, lon];
+  }
 };
 
 const printWeather = async (latitude, longitude) => {
@@ -77,6 +78,7 @@ const printWeather = async (latitude, longitude) => {
   return dict;
 };
 
+edited = false;
 exists = false;
 currentLat = 0;
 currentLong = 0;
@@ -91,9 +93,6 @@ const getCurrentLocation = new Promise((resolve, reject) => {
 const listenForEvent = async () => {
   if (document.querySelector(".RDlrG") && !exists) {
     [currentLat, currentLong] = await getCurrentLocation.then((data) => data);
-
-    console.log(currentLat);
-    console.log(currentLong);
 
     const dialogPopup = document.querySelector(".RDlrG");
     dialogPopup.style.overflowX = "visible";
@@ -215,9 +214,23 @@ const listenForEvent = async () => {
       exists = false;
     } else {
       const textBox = document.querySelector('[aria-label="Location"]');
-      textBox.addEventListener('input', (e) => {
-        console.log(e)
-      })
+      
+      if (edited && textBox.ariaExpanded === "false" && textBox.value) {
+        
+        let address = textBox.value.split(", ");
+        while (address.length > 4) {
+          address.shift();
+        }
+
+        console.log(address.join(", "));
+
+        let coord = await printCoords(address.join(", "));
+        if (coord) {
+          [currentLat, currentLong] = coord
+        }
+        edited = false;
+      }
+      edited = textBox.ariaExpanded === "true";
     }
   }
 
