@@ -238,6 +238,20 @@ const updateWeather = async () => {
   return dayW;
 };
 
+const checkNewEvent = async () => {
+  const box = document.querySelector(".RDlrG");
+  
+  if (!box) {
+    return false;
+  }
+
+  if (box.getAttribute("data-allow-wheel-scroll") === "false") {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 const updatePopup = async () => {
   const dialogPopup = document.querySelector(".RDlrG");
   dialogPopup.style.overflowX = "visible";
@@ -318,23 +332,23 @@ const updatePopup = async () => {
 };
 
 const listenForEvent = async () => {
-  if (document.querySelector(".RDlrG") && !exists) {
+  if ((await checkNewEvent()) && !exists) {
     [currentLat, currentLong] = await getCurrentLocation.then((data) => data);
 
     updatePopup();
 
     exists = true;
   } else {
-    if (!document.querySelector(".RDlrG")) {
+    if (!(await checkNewEvent())) {
       weatherPopupVisible = false;
       exists = false;
-    } else {
+    } else if (await checkNewEvent()){
       const textBox = document.querySelector('[aria-label="Location"]');
 
       if (edited && textBox.ariaExpanded === "false" && textBox.value) {
 
         
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise(r => setTimeout(r, 200));
 
 
         let address = textBox.value.split(", ");
