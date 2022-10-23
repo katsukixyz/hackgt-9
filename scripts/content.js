@@ -173,7 +173,20 @@ const listenForEvent = async () => {
       const roundedPrecip = Math.floor(Math.round(hPrecip) / 10) * 10;
 
       const iconImage = document.createElement("img");
-      iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
+      if (roundedPrecip <= 50 && roundedPrecip >= 10) {
+        iconImage.src = chrome.runtime.getURL(
+          "images/rain_s_sunny.png"
+        );
+      } else if (roundedPrecip === 0) {
+        iconImage.src = chrome.runtime.getURL(
+          "images/sunny.png"
+        );
+      } else {
+        iconImage.src = chrome.runtime.getURL(
+          "images/rain.png"
+        );
+      }
+
       iconImage.style.height = "25px";
       iconImage.style.border = "none";
       iconImage.style.padding = 0;
