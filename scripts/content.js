@@ -9,34 +9,33 @@ const isDay = (data, time) => {
   if (half === "PM") {
     riseHour += 12;
   }
-  console.log(riseHour);
+
   riseHour += 24 - tZone;
   riseHour %= 24;
-  console.log(riseHour);
+
   let riseMin = parseInt(sunrise.split(":")[1]);
   let setHour = parseInt(sunset.split(":")[0]);
   half = (sunset.split(":")[2]).split(" ")[1];
   if (half === "PM") {
     setHour += 12;
   }
-  console.log(setHour);
+
   setHour += 24 - tZone;
   setHour %= 24;
   let setMin = parseInt(sunset.split(":")[1]);
   let timeHour = parseInt(time.split(":")[0]);
   let timeMin = parseInt(time.split(":")[1]);
-  console.log(riseHour, riseMin, setHour, setMin, timeHour, timeMin);
-  console.log("----");
+
   if (riseHour < timeHour && timeHour < setHour) {
-    console.log("t1");
+
     return true;
   }
   if (riseHour == timeHour && riseMin < timeMin) {
-    console.log("t2");
+
     return true;
   }
   if (timeHour == setHour && timeMin < setMin) {
-    console.log("t3");
+
     return true;
   }
   return false;
@@ -82,7 +81,13 @@ const printWeather = async (latitude, longitude) => {
     .then((response) => response.text())
     .then((str) => new DOMParser().parseFromString(str, "text/xml"));
 
+  if (weather.getElementsByTagName("parsererror").length > 0) {
+    return null;
+  }
+
   let time = new Array();
+
+  console.log(weather);
 
   const dateTimes = weather.getElementsByTagName("time-layout")[0].childNodes;
   dateTimes.forEach((node) => {
@@ -159,6 +164,11 @@ const updateWeather = async () => {
   const day = date.getDate();
 
   const weekData = await printWeather(currentLat, currentLong);
+
+  if (!weekData) {
+    return;
+  }
+
   const dayData =
     weekData[
       `${month < 10 ? "0" + month : month}-${day < 10 ? "0" + day : day}`
@@ -312,8 +322,13 @@ const updatePopup = async () => {
   };
 
   const observer = new MutationObserver(async (mutationList, observer) => {
-    weatherPopup.removeChild(weatherPopup.firstChild);
-    weatherPopup.appendChild(await updateWeather());
+    if (weatherPopup.firstChild) {
+      weatherPopup.removeChild(weatherPopup.firstChild);
+    }
+    let next = await updateWeather();
+    if (next) {
+      weatherPopup.appendChild(await updateWeather());
+    }
   });
   observer.observe(dateElement, observerOptions);
 
@@ -352,7 +367,9 @@ const updatePopup = async () => {
 
   const dayW = await updateWeather();
 
-  weatherPopup.appendChild(dayW);
+  if (dayW) {
+    weatherPopup.appendChild(dayW);
+  }
 
   //Weather button styling
   const weatherButton = document.createElement("img");
@@ -419,8 +436,13 @@ const listenForEvent = async () => {
           [currentLat, currentLong] = coord;
           console.log(weatherPopup);
 
-          weatherPopup.removeChild(weatherPopup.firstChild);
-          weatherPopup.appendChild(await updateWeather());
+          if (weatherPopup.firstChild) {
+            weatherPopup.removeChild(weatherPopup.firstChild);
+          }
+          let next = await updateWeather();
+          if (next) {
+            weatherPopup.appendChild(next);
+          }
         }
         edited = false;
       }
