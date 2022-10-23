@@ -123,9 +123,11 @@ weatherPopupVisible = false;
 weatherPopup = null;
 
 const updateWeather = async () => {
-  const dateElements = document.querySelectorAll(".ky6s2b");
+  const dateElements = document.querySelector(".ky6s2b");
 
-  const date = new Date(dateElements[0].textContent.split(", ")[1]);
+  console.log()
+
+  const date = new Date(dateElements.textContent.split(", ")[1]);
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
@@ -134,6 +136,7 @@ const updateWeather = async () => {
 
   const dayW = document.createElement("div");
   dayData.forEach((hour) => {
+    console.log(hour);
     const [hIndex, hTemp, hPrecip] = hour;
 
     const hourW = document.createElement("div");
@@ -220,6 +223,17 @@ const updatePopup = async () => {
   
   const titleElement = document.querySelector(".mvRfff");
 
+  const dateElement = document.querySelector(".ky6s2b");
+  const observerOptions = {
+    attributes: true
+  }
+
+  const observer = new MutationObserver(async (mutationList, observer) => {
+    weatherPopup.removeChild(weatherPopup.firstChild);
+    weatherPopup.appendChild(await updateWeather());
+  });
+  observer.observe(dateElement, observerOptions);
+
   //weatherPopup styling
   weatherPopup = document.createElement("div");
   weatherPopup.style.position = "absolute";
@@ -301,7 +315,7 @@ const listenForEvent = async () => {
       
       if (edited && textBox.ariaExpanded === "false" && textBox.value) {
         
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise(r => setTimeout(r, 200));
 
         let address = textBox.value.split(", ");
         while (address.length > 4) {
