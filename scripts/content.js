@@ -1,3 +1,32 @@
+// day = "YYYY:MM:DD"
+// time = "HH:MM"
+const isDay = async (day, time, lat, lon) => {
+  sunURL = "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng=" + lon + "&date=" + day;
+  const data = await fetch(sunURL)
+    .then((response) => response.text())
+    .then((str) => JSON.parse(str))
+  
+    let sunrise = data.results.sunrise;
+    let sunset = data.results.sunset;
+    let riseHour = parseInt(sunrise.split(":")[0]);
+    let riseMin = parseInt(sunrise.split(":")[1]);
+    let setHour = parseInt(sunset.split(":")[0]);
+    let setMin = parseInt(sunset.split(":")[1]);
+    let timeHour = parseInt(time.split(":")[0]);
+    let timeMin = parseInt(time.split(":")[1]);
+    //console.log(riseHour, riseMin, setHour, setMin, timeHour, timeMin);
+    if (riseHour < timeHour && timeHour < setHour){
+      return true;
+    }
+    if (riseHour == timeHour && riseMin < timeMin) { 
+      return true;
+    }
+    if (timeHour == setHour && timeMin < setMin) {
+      return true;
+    }
+    return false;
+}
+
 const printCoords = async (locationInput) => {
   locURL =
     "https://nominatim.openstreetmap.org/search?q=" +
