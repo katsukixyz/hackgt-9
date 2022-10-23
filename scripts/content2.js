@@ -1,5 +1,6 @@
 weatherOldPopupVisible = false;
 weatherOldPopup = null;
+dialogOldPopup = null;
 existsOld = false;
 oldLoc = "";
 
@@ -161,10 +162,10 @@ const checkOldEvent = async () => {
 
 
 const updatePopupOld = async () => {
-  const dialogPopup = document.querySelector(".RDlrG");
-  dialogPopup.style.overflowX = "visible";
-  dialogPopup.style.overflowY = "visible";
-  dialogPopup.style.position = "relative";
+  dialogOldPopup = document.querySelector(".RDlrG");
+  dialogOldPopup.style.overflowX = "visible";
+  dialogOldPopup.style.overflowY = "visible";
+  dialogOldPopup.style.position = "relative";
 
 
   const titleElement = document.querySelector(".wv9rPe");
@@ -218,6 +219,7 @@ const updatePopupOld = async () => {
 
   if (dayW) {
     weatherOldPopup.appendChild(dayW);
+    console.log("HI")
   }
 
   //Weather button styling
@@ -245,10 +247,10 @@ const updatePopupOld = async () => {
 
   weatherButton.addEventListener("click", (wClickEvent) => {
     if (weatherOldPopupVisible) {
-      dialogPopup.removeChild(weatherOldPopup);
+        dialogOldPopup.removeChild(weatherOldPopup);
       weatherOldPopupVisible = false;
     } else {
-      dialogPopup.appendChild(weatherOldPopup);
+        dialogOldPopup.appendChild(weatherOldPopup);
       weatherOldPopupVisible = true;
     }
   });
@@ -273,9 +275,6 @@ const listenForOldEvent = async () => {
         while (address.length > 4) {
           address.shift();
         }
-        console.log(address.join(", "));
-        console.log(oldLoc);
-        console.log(address.join(", ") != oldLoc);
         if (address.join(", ") != oldLoc) {
             oldLoc = address.join(", ");
             console.log(address.join(", "));
@@ -288,6 +287,10 @@ const listenForOldEvent = async () => {
                 if (weatherOldPopup.firstChild) {
                     weatherOldPopup.removeChild(weatherOldPopup.firstChild);
                 }
+                if (weatherOldPopupVisible) {
+                    dialogOldPopup.removeChild(weatherOldPopup);
+                }
+                weatherOldPopupVisible = false;
                 await updatePopupOld();
             }
         }
