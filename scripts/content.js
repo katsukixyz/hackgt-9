@@ -70,10 +70,10 @@ const printWeather = async (latitude, longitude) => {
 
   for (let i = 0; i < time.length; i++) {
     let curTime = time[i].slice(11, 13);
-    if (time[i].slice(0, 10) in dict == false) {
-      dict[time[i].slice(0, 10)] = new Array();
+    if (time[i].slice(5, 10) in dict == false) {
+      dict[time[i].slice(5, 10)] = new Array();
     }
-    dict[time[i].slice(0, 10)].push([curTime, temperature[i], precip[i]]);
+    dict[time[i].slice(5, 10)].push([curTime, temperature[i], precip[i]]);
   }
   return dict;
 };
@@ -89,6 +89,9 @@ const getCurrentLocation = new Promise((resolve, reject) => {
     resolve([latitude, longitude]);
   });
 });
+
+exists = false;
+weatherPopupVisible = false;
 
 const listenForEvent = async () => {
   if (document.querySelector(".RDlrG") && !exists) {
@@ -126,37 +129,56 @@ const listenForEvent = async () => {
     let offset = elemRect.left - bodyRect.left;
 
     if (offset <= 270) {
-        weatherPopup.style.removeProperty("left");
-        weatherPopup.style.right = "-220px";
+      weatherPopup.style.removeProperty("left");
+      weatherPopup.style.right = "-220px";
     } else {
-        weatherPopup.style.removeProperty("right");
-        weatherPopup.style.left = "-220px";
+      weatherPopup.style.removeProperty("right");
+      weatherPopup.style.left = "-220px";
     }
 
     weatherPopup.style.pointerEvents = "visible";
 
+    const date = new Date(dateElements[0].textContent.split(", ")[1]);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
 
-    //Adding hour elements to the pop up
-    const hourArray = [];
-    for (let i = 0; i < 24; i++) {
-      hourArray.push([i, 30]);
-    }
+    const weekData = await getCurrentLocation;
+    const dayData = weekData[`${month < 10 ? "0" + month : month}-${day}`];
 
     const dayW = document.createElement("div");
-    hourArray.forEach((hour) => {
+    dayData.forEach((hour) => {
+      const [hIndex, hTemp, hPrecip] = hour;
+
       const hourW = document.createElement("div");
       hourW.style.display = "flex";
       hourW.style.flexDirection = "row";
       hourW.style.alignItems = "center";
       hourW.style.justifyContent = "space-between";
 
+      const parsedH = parseInt(hIndex);
+      const am = parsedH < 12;
+
       const time = document.createElement("p");
-      time.textContent = "2:00pm";
+      time.textContent = `${
+        am
+          ? parsedH === 0
+            ? "12"
+            : parsedH
+          : parsedH === 12
+          ? parsedH
+          : parsedH - 12
+      } ${am ? "AM" : "PM"}`;
+      time.style.width = "42px";
+      time.style.textAlign = "right";
 
       const icon = document.createElement("div");
       icon.style.display = "flex";
       icon.style.flexDirection = "column";
+      icon.style.justifyContent = "center";
       icon.style.alignItems = "center";
+      icon.style.height = "40px";
+
+      const roundedPrecip = Math.floor(Math.round(hPrecip) / 10) * 10;
 
       const iconImage = document.createElement("img");
       iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
@@ -164,17 +186,20 @@ const listenForEvent = async () => {
       iconImage.style.border = "none";
       iconImage.style.padding = 0;
       iconImage.style.margin = 0;
-      const iconPercent = document.createElement("p");
-      iconPercent.style.fontSize = "12px";
-      iconPercent.style.border = "none";
-      iconPercent.style.padding = 0;
-      iconPercent.style.margin = 0;
-      iconPercent.textContent = "30%";
       icon.appendChild(iconImage);
-      icon.appendChild(iconPercent);
+
+      if (roundedPrecip > 0) {
+        const iconPercent = document.createElement("p");
+        iconPercent.style.fontSize = "12px";
+        iconPercent.style.border = "none";
+        iconPercent.style.padding = 0;
+        iconPercent.style.margin = 0;
+        iconPercent.textContent = `${roundedPrecip}%`;
+        icon.appendChild(iconPercent);
+      }
 
       const temp = document.createElement("p");
-      temp.textContent = "47°";
+      temp.textContent = `${hTemp}°`;
 
       hourW.appendChild(time);
       hourW.appendChild(icon);
@@ -185,8 +210,10 @@ const listenForEvent = async () => {
     weatherPopup.appendChild(dayW);
 
     //Weather button styling
-    const weatherButton = document.createElement("button");
-    weatherButton.textContent = "☁️";
+    const weatherButton = document.createElement("img");
+    // weatherButton.textContent = "☁️";
+    weatherButton.src = "images/button.svg";
+
     weatherButton.style.position = "absolute";
     weatherButton.style.background = "rgba(255, 122, 89, 0)";
     weatherButton.style.zIndex = "20";
@@ -195,15 +222,16 @@ const listenForEvent = async () => {
     weatherButton.style.left = "20px";
 
     weatherButton.addEventListener("click", (wClickEvent) => {
-      dialogPopup.appendChild(weatherPopup);
+      if (weatherPopupVisible) {
+        dialogPopup.removeChild(weatherPopup);
+        weatherPopupVisible = false;
+      } else {
+        dialogPopup.appendChild(weatherPopup);
+        weatherPopupVisible = true;
+      }
     });
 
     titleElement.appendChild(weatherButton);
-
-    const date = new Date(dateElements[0].textContent.split(", ")[1]);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    console.log(month, day);
     exists = true;
 
 
@@ -231,6 +259,8 @@ const listenForEvent = async () => {
         edited = false;
       }
       edited = textBox.ariaExpanded === "true";
+      weatherPopupVisible = false;
+
     }
   }
 
