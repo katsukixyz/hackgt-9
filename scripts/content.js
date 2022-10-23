@@ -6,7 +6,8 @@ const isDay = (data, time) => {
   let sunset = data.results.sunset;
   let riseHour = parseInt(sunrise.split(":")[0]);
   let half = (sunrise.split(":")[2]).split(" ")[1];
-  if (half === "PM") {
+  console.log(riseHour);
+  if (half === "PM" && riseHour != 12) {
     riseHour += 12;
   }
 
