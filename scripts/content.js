@@ -1,31 +1,26 @@
-// day = "YYYY:MM:DD"
+// day = "YYYY-MM-DD"
 // time = "HH:MM"
-const isDay = async (day, time, lat, lon) => {
-  sunURL = "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng=" + lon + "&date=" + day;
-  const data = await fetch(sunURL)
-    .then((response) => response.text())
-    .then((str) => JSON.parse(str))
-  
-    let sunrise = data.results.sunrise;
-    let sunset = data.results.sunset;
-    let riseHour = parseInt(sunrise.split(":")[0]);
-    let riseMin = parseInt(sunrise.split(":")[1]);
-    let setHour = parseInt(sunset.split(":")[0]);
-    let setMin = parseInt(sunset.split(":")[1]);
-    let timeHour = parseInt(time.split(":")[0]);
-    let timeMin = parseInt(time.split(":")[1]);
-    //console.log(riseHour, riseMin, setHour, setMin, timeHour, timeMin);
-    if (riseHour < timeHour && timeHour < setHour){
-      return true;
-    }
-    if (riseHour == timeHour && riseMin < timeMin) { 
-      return true;
-    }
-    if (timeHour == setHour && timeMin < setMin) {
-      return true;
-    }
-    return false;
-}
+const isDay = (data, time) => {
+  let sunrise = data.results.sunrise;
+  let sunset = data.results.sunset;
+  let riseHour = parseInt(sunrise.split(":")[0]);
+  let riseMin = parseInt(sunrise.split(":")[1]);
+  let setHour = parseInt(sunset.split(":")[0]);
+  let setMin = parseInt(sunset.split(":")[1]);
+  let timeHour = parseInt(time.split(":")[0]);
+  let timeMin = parseInt(time.split(":")[1]);
+  //console.log(riseHour, riseMin, setHour, setMin, timeHour, timeMin);
+  if (riseHour < timeHour && timeHour < setHour) {
+    return true;
+  }
+  if (riseHour == timeHour && riseMin < timeMin) {
+    return true;
+  }
+  if (timeHour == setHour && timeMin < setMin) {
+    return true;
+  }
+  return false;
+};
 
 const printCoords = async (locationInput) => {
   locURL =
@@ -35,12 +30,16 @@ const printCoords = async (locationInput) => {
   const location = await fetch(locURL)
     .then((response) => response.text())
     .then((str) => new DOMParser().parseFromString(str, "text/xml"));
-  
+
   if (location.getElementsByTagName("place").length === 0) {
     return null;
   } else {
-    const lat = parseFloat(location.getElementsByTagName("place")[0].getAttribute("lat"));
-    const lon = parseFloat(location.getElementsByTagName("place")[0].getAttribute("lon"));
+    const lat = parseFloat(
+      location.getElementsByTagName("place")[0].getAttribute("lat")
+    );
+    const lon = parseFloat(
+      location.getElementsByTagName("place")[0].getAttribute("lon")
+    );
     return [lat, lon];
   }
 };
@@ -86,20 +85,28 @@ const printWeather = async (latitude, longitude) => {
   temperatureValues.forEach((node) => {
     temperature.push(parseInt(node["innerHTML"]));
   });
-  
+
   let cloudCover = new Array();
-  const cloudCoverValues = weather.getElementsByTagName("cloud-amount")[0].childNodes;
+  const cloudCoverValues =
+    weather.getElementsByTagName("cloud-amount")[0].childNodes;
 
   cloudCoverValues.forEach((node) => {
-      cloudCover.push(Math.floor(Math.round(parseInt(node["innerHTML"])) / 10) * 10);
-    });
+    cloudCover.push(
+      Math.floor(Math.round(parseInt(node["innerHTML"])) / 10) * 10
+    );
+  });
 
   for (let i = 0; i < time.length; i++) {
     let curTime = time[i].slice(11, 13);
     if (time[i].slice(5, 10) in dict == false) {
       dict[time[i].slice(5, 10)] = new Array();
     }
-    dict[time[i].slice(5, 10)].push([curTime, temperature[i], precip[i], cloudCover[i]]);
+    dict[time[i].slice(5, 10)].push([
+      curTime,
+      temperature[i],
+      precip[i],
+      cloudCover[i],
+    ]);
   }
   return dict;
 };
@@ -128,11 +135,32 @@ const updateWeather = async () => {
   const day = date.getDate();
 
   const weekData = await printWeather(currentLat, currentLong);
-  const dayData = weekData[`${month < 10 ? "0" + month : month}-${day}`];
+  const dayData =
+    weekData[
+      `${month < 10 ? "0" + month : month}-${day < 10 ? "0" + day : day}`
+    ];
 
   const dayW = document.createElement("div");
+
+  const formatDate = `2022-${month < 10 ? "0" + month : month}-${
+    day < 10 ? "0" + day : day
+  }`;
+  const dayFetchUrl =
+    "https://api.sunrise-sunset.org/json?lat=" +
+    currentLat +
+    "&lng=" +
+    currentLong +
+    "&date=" +
+    formatDate;
+
+  const sunsetRes = await fetch(dayFetchUrl);
+  const sunsetData = await sunsetRes.json();
   dayData.forEach((hour) => {
-    const [hIndex, hTemp, hPrecip] = hour;
+    hour.push(isDay(sunsetData, hour[0] + ":00"));
+  });
+
+  dayData.forEach((hour) => {
+    const [hIndex, hTemp, hPrecip, hCloud, hIsDay] = hour;
 
     const hourW = document.createElement("div");
     hourW.style.display = "flex";
@@ -167,17 +195,11 @@ const updateWeather = async () => {
 
     const iconImage = document.createElement("img");
     if (roundedPrecip <= 50 && roundedPrecip >= 10) {
-      iconImage.src = chrome.runtime.getURL(
-        "images/rain_s_sunny.png"
-      );
+      iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
     } else if (roundedPrecip === 0) {
-      iconImage.src = chrome.runtime.getURL(
-        "images/sunny.png"
-      );
+      iconImage.src = chrome.runtime.getURL("images/sunny.png");
     } else {
-      iconImage.src = chrome.runtime.getURL(
-        "images/rain.png"
-      );
+      iconImage.src = chrome.runtime.getURL("images/rain.png");
     }
 
     iconImage.style.height = "25px";
@@ -206,8 +228,8 @@ const updateWeather = async () => {
     dayW.appendChild(hourW);
   });
 
-  return dayW
-}
+  return dayW;
+};
 
 const updatePopup = async () => {
   const dialogPopup = document.querySelector(".RDlrG");
@@ -215,7 +237,6 @@ const updatePopup = async () => {
   dialogPopup.style.overflowY = "visible";
   dialogPopup.style.position = "relative";
 
-  
   const titleElement = document.querySelector(".mvRfff");
 
   //weatherPopup styling
@@ -251,10 +272,8 @@ const updatePopup = async () => {
 
   weatherPopup.style.pointerEvents = "visible";
 
-  
-
   const dayW = await updateWeather();
-  
+
   weatherPopup.appendChild(dayW);
 
   //Weather button styling
@@ -279,7 +298,7 @@ const updatePopup = async () => {
     }
   });
   titleElement.appendChild(weatherButton);
-}
+};
 
 const listenForEvent = async () => {
   if (document.querySelector(".RDlrG") && !exists) {
@@ -289,16 +308,13 @@ const listenForEvent = async () => {
 
     exists = true;
   } else {
-
-
     if (!document.querySelector(".RDlrG")) {
       weatherPopupVisible = false;
       exists = false;
     } else {
       const textBox = document.querySelector('[aria-label="Location"]');
-      
+
       if (edited && textBox.ariaExpanded === "false" && textBox.value) {
-        
         let address = textBox.value.split(", ");
         while (address.length > 4) {
           address.shift();
@@ -308,15 +324,13 @@ const listenForEvent = async () => {
 
         let coord = await printCoords(address.join(", "));
         if (coord) {
-          [currentLat, currentLong] = coord
+          [currentLat, currentLong] = coord;
           weatherPopup.removeChild(weatherPopup.firstChild);
           weatherPopup.appendChild(await updateWeather());
         }
         edited = false;
       }
       edited = textBox.ariaExpanded === "true";
-      
-
     }
   }
 
