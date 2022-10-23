@@ -86,23 +86,20 @@ const printWeather = async (latitude, longitude) => {
   temperatureValues.forEach((node) => {
     temperature.push(parseInt(node["innerHTML"]));
   });
+  
+  let cloudCover = new Array();
+  const cloudCoverValues = weather.getElementsByTagName("cloud-amount")[0].childNodes;
 
-  //let possibleWeather = new Array();
-  //const possibleWeatherValues =
-  //  weather.getElementsByTagName("weather")[0].childNodes;
-
-  //console.log(latitude);
-  //console.log(possibleWeatherValues);
-  //possibleWeatherValues.forEach((node) => {
-  //  temperature.push(parseInt(node["innerHTML"]));
-  //});
+  cloudCoverValues.forEach((node) => {
+      cloudCover.push(Math.floor(Math.round(parseInt(node["innerHTML"])) / 10) * 10);
+    });
 
   for (let i = 0; i < time.length; i++) {
     let curTime = time[i].slice(11, 13);
     if (time[i].slice(5, 10) in dict == false) {
       dict[time[i].slice(5, 10)] = new Array();
     }
-    dict[time[i].slice(5, 10)].push([curTime, temperature[i], precip[i]]);
+    dict[time[i].slice(5, 10)].push([curTime, temperature[i], precip[i], cloudCover[i]]);
   }
   return dict;
 };
