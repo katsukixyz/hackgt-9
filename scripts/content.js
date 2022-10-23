@@ -130,7 +130,7 @@ const updateWeather = async () => {
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
-  const weekData = await getCurrentLocation;
+  const weekData = await printWeather(currentLat, currentLong);
   const dayData = weekData[`${month < 10 ? "0" + month : month}-${day}`];
 
   const dayW = document.createElement("div");
