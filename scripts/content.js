@@ -46,6 +46,8 @@ const printCoords = async (locationInput) => {
 };
 
 const printWeather = async (latitude, longitude) => {
+  console.log(latitude);
+  console.log(longitude);
   url =
     "https://forecast.weather.gov/MapClick.php?" +
     "lat=" +
@@ -302,6 +304,8 @@ const listenForEvent = async () => {
       
       if (edited && textBox.ariaExpanded === "false" && textBox.value) {
         
+        await new Promise(r => setTimeout(r, 100));
+
         let address = textBox.value.split(", ");
         while (address.length > 4) {
           address.shift();
@@ -311,7 +315,8 @@ const listenForEvent = async () => {
 
         let coord = await printCoords(address.join(", "));
         if (coord) {
-          [currentLat, currentLong] = coord
+          [currentLat, currentLong] = coord;
+          console.log(weatherPopup);
           weatherPopup.removeChild(weatherPopup.firstChild);
           weatherPopup.appendChild(await updateWeather());
         }
