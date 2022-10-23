@@ -130,10 +130,10 @@ const updateWeather = async () => {
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
-  const dayW = document.createElement("div");
-
-  const weekData = await printWeather(currentLat, currentLong);
+  const weekData = await getCurrentLocation;
   const dayData = weekData[`${month < 10 ? "0" + month : month}-${day}`];
+
+  const dayW = document.createElement("div");
   dayData.forEach((hour) => {
     const [hIndex, hTemp, hPrecip] = hour;
 
@@ -169,7 +169,20 @@ const updateWeather = async () => {
     const roundedPrecip = Math.floor(Math.round(hPrecip) / 10) * 10;
 
     const iconImage = document.createElement("img");
-    iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
+    if (roundedPrecip <= 50 && roundedPrecip >= 10) {
+      iconImage.src = chrome.runtime.getURL(
+        "images/rain_s_sunny.png"
+      );
+    } else if (roundedPrecip === 0) {
+      iconImage.src = chrome.runtime.getURL(
+        "images/sunny.png"
+      );
+    } else {
+      iconImage.src = chrome.runtime.getURL(
+        "images/rain.png"
+      );
+    }
+
     iconImage.style.height = "25px";
     iconImage.style.border = "none";
     iconImage.style.padding = 0;
@@ -268,7 +281,6 @@ const updatePopup = async () => {
       weatherPopupVisible = true;
     }
   });
-
   titleElement.appendChild(weatherButton);
 }
 
