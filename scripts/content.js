@@ -6,23 +6,29 @@ const isDay = (data, time) => {
   let sunset = data.results.sunset;
   let riseHour = parseInt(sunrise.split(":")[0]);
   let half = (sunrise.split(":")[2]).split(" ")[1];
-  console.log(riseHour);
+  //console.log("GMT Rise: ", riseHour);
   if (half === "PM" && riseHour != 12) {
     riseHour += 12;
   }
 
   riseHour += 24 - tZone;
   riseHour %= 24;
+  //console.log("Adjusted Rise: ", riseHour);
 
   let riseMin = parseInt(sunrise.split(":")[1]);
   let setHour = parseInt(sunset.split(":")[0]);
+  //console.log("GMT Set: ", setHour);
   half = (sunset.split(":")[2]).split(" ")[1];
-  if (half === "PM") {
+  //console.log("GMT Half: ", half);
+  if (half === "PM" && setHour != 12) {
     setHour += 12;
   }
-
+  if (half === "AM" && setHour == 12) {
+    setHour += 12;
+  }
   setHour += 24 - tZone;
   setHour %= 24;
+  //console.log("Adjusted Set: ", setHour);
   let setMin = parseInt(sunset.split(":")[1]);
   let timeHour = parseInt(time.split(":")[0]);
   let timeMin = parseInt(time.split(":")[1]);
@@ -88,7 +94,7 @@ const printWeather = async (latitude, longitude) => {
 
   let time = new Array();
 
-  console.log(weather);
+  //console.log(weather);
 
   const dateTimes = weather.getElementsByTagName("time-layout")[0].childNodes;
   dateTimes.forEach((node) => {
@@ -127,7 +133,7 @@ const printWeather = async (latitude, longitude) => {
   for (let i = 0; i < time.length; i++) {
     let curTime = time[i].slice(11, 13);
     tZone = parseInt(time[i].slice(20, 22));
-    console.log(time[i].slice(20, 22));
+    //console.log(time[i].slice(20, 22));
     if (time[i].slice(5, 10) in dict == false) {
       dict[time[i].slice(5, 10)] = new Array();
     }
