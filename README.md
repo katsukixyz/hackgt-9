@@ -3,6 +3,29 @@
 
 Tired of your outdoor events getting canceled due to rain? Introducing “Weather or Not”, the calendar upgrade you need to keep your plans sunny! 
 
+## Installation instructions
+This project is still under active development, with many new features and bug-fixes coming soon! To use this project before it is published to the Chrome Web Store, follow the instructions below:
+1. Create a folder on your local machine to store the code
+2. Use your command line to move into the newly created folder
+3. Run `git clone https://github.com/katsukixyz/hackgt-9.git` in the command line
+4. On your chrome browser, go to the site chrome://extensions
+5. In the top right corner, turn on "Developer mode"
+6. In the top left corner, click "Load unpacked"
+7. Navigate to the folder you created in step 1 and then select the 'hack-gt9' folder
+
+Now, the next time you open Google Calendar, the extension will be working!
+
+### Update instructions
+If updates have been made to this repository and you want to have them on your computer, follow these steps (assuming you previously did the steps above).
+1. Open your command line and navigate to the folder you created in step 1 above
+2. Navigate into the 'hack-gt9' folder
+3. Run `git pull`
+4. On your chrome browser, go to the site chrome://extensions
+5. In the "Weather or Not" box, hit the refresh button
+6. Refresh your Google Calendar
+
+The latest changes will now be uploaded.
+
 ## Inspiration
 The idea for this project came from a frequent problem we encountered in our day-to-day lives. We were very frustrated when scheduling frisbee practices as we needed to cross-reference our potential practice dates with weather conditions for those dates. In addition, it was more tricky when we tried scheduling events a few days ahead or even at a distant location. Thus, we wanted to try extending our existing calendar application with a way to view calendar events, simultaneously, along with weather.
 
