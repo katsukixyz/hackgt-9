@@ -2,6 +2,12 @@ let tZone = 0;
 // day = "YYYY-MM-DD"
 // time = "HH:MM"
 
+/**
+ * Checks to see if a given time (HH:MM) on a given day is during the day or during the night
+ * @param {JSON} data JSON file containing sunset and sunrise times
+ * @param {String} time The time that needs to be checked to see if it is during the day
+ * @returns True if during the day, False if during the night
+ */
 const isDay = (data, time) => {
     let sunrise = data.results.sunrise;
     let sunset = data.results.sunset;
@@ -49,6 +55,11 @@ const isDay = (data, time) => {
     return false;
   };
 
+/**
+ * 
+ * @param {String} locationInput Space separated string describing the address of the location (e.g. "Atlanta, GA")
+ * @returns Array of length two containing latitude and longitude of locationInput
+ */
 const printCoords = async (locationInput) => {
     locURL =
       "https://nominatim.openstreetmap.org/search?q=" +
@@ -71,6 +82,13 @@ const printCoords = async (locationInput) => {
     }
   };
 
+/**
+ * Given a latitude and longitude, this function returns the weather data in a dictionary for the next seven days. 
+ * @param {number} latitude The latitude of the current location
+ * @param {number} longitude The longitude of the current location
+ * @returns Dictionary of length 168, with each key being the date and each value an array of length four containing the time (in hours), the 
+ * temperature at that time, the precipitation percentage at time, and finally the percentage of cloud cover at that time
+ */
 const printWeather = async (latitude, longitude) => {
     console.log(latitude);
     console.log(longitude);
