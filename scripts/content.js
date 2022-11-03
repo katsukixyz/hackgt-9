@@ -89,33 +89,9 @@ const updateWeather = async () => {
       } else {
         iconImage.src = chrome.runtime.getURL("images/night.png");
       }*/
-      
-      if (roundedPrecip >= 60) {
-        iconImage.src = chrome.runtime.getURL("images/rain.png");
-      } else if (roundedPrecip >= 30) {
-        if (hIsDay) {
-          iconImage.src = chrome.runtime.getURL("images/rain_s_sunny.png");
-        } else {
-          iconImage.src = chrome.runtime.getURL("images/rain_night.png");
-        }
-      } else if (hCloud >= 70) {
-        iconImage.src = chrome.runtime.getURL("images/cloudy.png");
-      } else if (hCloud >= 30) {
-        if (hIsDay) {
-          iconImage.src = chrome.runtime.getURL("images/partly_cloudy.png");
-        } else {
-          iconImage.src = chrome.runtime.getURL("images/cloudy_night.png");
-        }
-      } else {
-        if (hIsDay) {
-          iconImage.src = chrome.runtime.getURL("images/sunny.png");
-        } else {
-          iconImage.src = chrome.runtime.getURL("images/night.png");
-        }
-      }
-      
 
-
+      iconImage.src = findIcon(roundedPrecip, hIsDay, hCloud);
+      
       iconImage.style.height = "25px";
       iconImage.style.border = "none";
       iconImage.style.padding = 0;
