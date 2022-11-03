@@ -173,3 +173,36 @@ const getCurrentLocation = new Promise((resolve, reject) => {
     });
   });
   
+/**
+ * 
+ * @param {number} roundedPrecip Percentage chance of rain, rounded to the nearest 10%
+ * @param {boolean} hIsDay Is the current time during the day
+ * @param {number} hCloud Percentage of sky covered by clouds, rounded to nearest 5%
+ * @returns Image URL of the icon representing the current weather conditions 
+ */
+const findIcon = (roundedPrecip, hIsDay, hCloud) => {
+    if (roundedPrecip >= 60) {
+        return chrome.runtime.getURL("images/rain.png");
+      } else if (roundedPrecip >= 30) {
+        if (hIsDay) {
+          return chrome.runtime.getURL("images/rain_s_sunny.png");
+        } else {
+          return chrome.runtime.getURL("images/rain_night.png");
+        }
+      } else if (hCloud >= 70) {
+        return chrome.runtime.getURL("images/cloudy.png");
+      } else if (hCloud >= 30) {
+        if (hIsDay) {
+          return chrome.runtime.getURL("images/partly_cloudy.png");
+        } else {
+          return chrome.runtime.getURL("images/cloudy_night.png");
+        }
+      } else {
+        if (hIsDay) {
+          return chrome.runtime.getURL("images/sunny.png");
+        } else {
+          return chrome.runtime.getURL("images/night.png");
+        }
+      }
+}
+
