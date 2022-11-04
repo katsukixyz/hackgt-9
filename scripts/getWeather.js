@@ -194,6 +194,7 @@ const getCurrentLocation = new Promise((resolve, reject) => {
  * @param {number} roundedPrecip Percentage chance of rain, rounded to the nearest 10%
  * @param {boolean} hIsDay Is the current time during the day
  * @param {number} hCloud Percentage of sky covered by clouds, rounded to nearest 5%
+ * @param {String} hInclement String describing if there is inclement weather (i.e. snow or thunder)
  * @returns Image URL of the icon representing the current weather conditions 
  */
 const findIcon = (roundedPrecip, hIsDay, hCloud, hInclement) => {
