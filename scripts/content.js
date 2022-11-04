@@ -1,11 +1,4 @@
-edited = false;
 exists = false;
-currentLat = 0;
-currentLong = 0;
-
-exists = false;
-weatherPopupVisible = false;
-weatherPopup = null;
 
 const curWeatherPopup = new WeatherPopup();
 
@@ -32,20 +25,32 @@ const updatePopup = async (lat, lon) => {
 
   const titleElement = document.querySelector(".mvRfff");
   const dateElement = document.querySelector(".ky6s2b");
+  const locationBox = document.querySelector('[aria-label="Location"]');
+
   const observerOptions = {
     attributes: true,
   };
 
-  // const observer = new MutationObserver(async (mutationList, observer) => {
-  //   if (weatherPopup.firstChild) {
-  //     weatherPopup.removeChild(weatherPopup.firstChild);
-  //   }
-  //   let next = await updateWeather();
-  //   if (next) {
-  //     weatherPopup.appendChild(await updateWeather());
-  //   }
-  // });
-  // observer.observe(dateElement, observerOptions);
+  const observerDate = new MutationObserver(async (mutationList, observer) => {
+    curWeatherPopup.updateWeather();
+  });
+  observerDate.observe(dateElement, observerOptions);
+
+  const observerLoc = new MutationObserver(async (mutationList, observer) => {
+    console.log(mutationList[mutationList.length-1]);
+    let address = mutationList[mutationList.length-1].target.value.split(", ");
+    while (address.length > 4) {
+      address.shift();
+    }
+
+    let coord = await printCoords(address.join(", "));
+    if (coord) {
+      console.log("HIHIIHI");
+      let [currentLat, currentLong] = coord;
+      curWeatherPopup.updateWeather(currentLat, currentLong);
+    }
+  });
+  observerLoc.observe(locationBox, observerOptions);
 
   curWeatherPopup.updateWeather(lat, lon)
   titleElement.appendChild(curWeatherPopup.weatherButton);
@@ -60,33 +65,9 @@ const listenForEvent = async () => {
     exists = true;
   } else {
     if (!(await checkNewEvent())) {
-      weatherPopupVisible = false;
       exists = false;
-    } else if (await checkNewEvent()){
-      const textBox = document.querySelector('[aria-label="Location"]');
-
-      if (edited && textBox.ariaExpanded === "false" && textBox.value) {
-        
-        await new Promise(r => setTimeout(r, 200));
-
-        let address = textBox.value.split(", ");
-        while (address.length > 4) {
-          address.shift();
-        }
-
-        console.log(address.join(", "));
-
-        let coord = await printCoords(address.join(", "));
-        if (coord) {
-          let [currentLat, currentLong] = coord;
-          curWeatherPopup.updateWeather(currentLat, currentLong);
-        }
-        edited = false;
-      }
-      edited = textBox.ariaExpanded === "true";
     }
   }
-
   setTimeout(listenForEvent, 250);
 };
 
