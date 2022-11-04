@@ -87,7 +87,8 @@ const printCoords = async (locationInput) => {
  * @param {number} latitude The latitude of the current location
  * @param {number} longitude The longitude of the current location
  * @returns Dictionary of length 168, with each key being the date and each value an array of length four containing the time (in hours), the 
- * temperature at that time, the precipitation percentage at time, and finally the percentage of cloud cover at that time
+ * temperature at that time, the precipitation percentage at time, the percentage of cloud cover at that time, and the description of current
+ * inclement weather at that time
  */
 const printWeather = async (latitude, longitude) => {
     console.log(latitude);
@@ -114,6 +115,20 @@ const printWeather = async (latitude, longitude) => {
     let time = new Array();
   
     //console.log(weather);
+    let inclement = new Array();
+    const inclementWeather = weather.getElementsByTagName("weather")[0].childNodes;
+    inclementWeather.forEach((node) => {
+      var temp = node["innerHTML"];
+      if (temp.includes("snow")) {
+        inclement.push("snow");
+      } 
+      else if (temp.includes("thunderstorms")){
+        inclement.push("thunder");
+      } 
+      else {
+        inclement.push("null");
+      }
+    });
   
     const dateTimes = weather.getElementsByTagName("time-layout")[0].childNodes;
     dateTimes.forEach((node) => {
@@ -161,6 +176,7 @@ const printWeather = async (latitude, longitude) => {
         temperature[i],
         precip[i],
         cloudCover[i],
+        inclement[i],
       ]);
     }
     return dict;
@@ -180,29 +196,48 @@ const getCurrentLocation = new Promise((resolve, reject) => {
  * @param {number} hCloud Percentage of sky covered by clouds, rounded to nearest 5%
  * @returns Image URL of the icon representing the current weather conditions 
  */
-const findIcon = (roundedPrecip, hIsDay, hCloud) => {
+const findIcon = (roundedPrecip, hIsDay, hCloud, hInclement) => {
     if (roundedPrecip >= 60) {
-        return chrome.runtime.getURL("images/rain.png");
-      } else if (roundedPrecip >= 30) {
-        if (hIsDay) {
-          return chrome.runtime.getURL("images/rain_s_sunny.png");
-        } else {
-          return chrome.runtime.getURL("images/rain_night.png");
-        }
-      } else if (hCloud >= 70) {
-        return chrome.runtime.getURL("images/cloudy.png");
-      } else if (hCloud >= 30) {
-        if (hIsDay) {
-          return chrome.runtime.getURL("images/partly_cloudy.png");
-        } else {
-          return chrome.runtime.getURL("images/cloudy_night.png");
-        }
-      } else {
-        if (hIsDay) {
-          return chrome.runtime.getURL("images/sunny.png");
-        } else {
-          return chrome.runtime.getURL("images/night.png");
-        }
+      if (hInclement == "thunder") {
+        return chrome.runtime.getURL("images/thunder.png");
       }
+      else if (hInclement == "snow") {
+        return chrome.runtime.getURL("images/snow.png");
+      }
+      return chrome.runtime.getURL("images/rain.png");
+    } 
+    else if (roundedPrecip >= 30) {
+      if (hIsDay) {
+        if (hInclement == "snow") {
+          return chrome.runtime.getURL("images/snow_s_sunny.png");
+        }
+        return chrome.runtime.getURL("images/rain_s_sunny.png");
+      } 
+      else {
+        if (hInclement == "snow") {
+          return chrome.runtime.getURL("images/snow_night.png");
+        }
+        return chrome.runtime.getURL("images/rain_night.png");
+      }
+    } 
+    else if (hCloud >= 70) {
+      return chrome.runtime.getURL("images/cloudy.png");
+    } 
+    else if (hCloud >= 30) {
+      if (hIsDay) {
+        return chrome.runtime.getURL("images/partly_cloudy.png");
+      } 
+      else {
+        return chrome.runtime.getURL("images/cloudy_night.png");
+      }
+    } 
+    else {
+      if (hIsDay) {
+        return chrome.runtime.getURL("images/sunny.png");
+      } 
+      else {
+        return chrome.runtime.getURL("images/night.png");
+      }
+    }
 }
 
