@@ -37,7 +37,7 @@ const makeWeather = async (currentLat, currentLong, date) => {
       });
   
       dayData.forEach((hour) => {
-        const [hIndex, hTemp, hPrecip, hCloud, hIsDay] = hour;
+        const [hIndex, hTemp, hPrecip, hCloud, hInclement, hIsDay] = hour;
   
         const hourW = document.createElement("div");
         hourW.style.display = "flex";
@@ -80,7 +80,7 @@ const makeWeather = async (currentLat, currentLong, date) => {
           iconImage.src = chrome.runtime.getURL("images/night.png");
         }*/
   
-        iconImage.src = findIcon(roundedPrecip, hIsDay, hCloud);
+        iconImage.src = findIcon(roundedPrecip, hIsDay, hCloud, hInclement);
         
         iconImage.style.height = "25px";
         iconImage.style.border = "none";
