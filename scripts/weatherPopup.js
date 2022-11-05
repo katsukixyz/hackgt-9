@@ -51,6 +51,7 @@ class WeatherPopup {
         this.weatherButton = weatherButton;
         this.lat = 0;
         this.lon = 0;
+        this.date = new Date();
     }
 
     togglePopupVisibility() {
@@ -61,14 +62,31 @@ class WeatherPopup {
         }
     }
 
-    async updateWeather(lat=this.lat, lon=this.lon) {
-        this.lat = lat;
-        this.lon = lon;
-        const dayW = await makeWeather(this.lat, this.lon);
+    async update() {
+        console.log(this.lat);
+        const dayW = await makeWeather(this.lat, this.lon, this.date);
         if (dayW) {
             this.weatherPopup.replaceChild(dayW, this.dayW);
             this.dayW = dayW;
         }
+    }
+
+    async updateWeather(lat, lon, date) {
+        this.lat = lat;
+        this.lon = lon;
+        this.date = date;
+        this.update();
+    }
+
+    async updateDateWeather(date) {
+        this.date = date;
+        this.update();
+    }
+
+    async updateLocWeather(lat, lon) {
+        this.lat = lat;
+        this.lon = lon;
+        this.update();
     }
 
 }
