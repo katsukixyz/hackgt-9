@@ -32,7 +32,9 @@ const updatePopup = async (lat, lon) => {
   };
 
   const observerDate = new MutationObserver(async (mutationList, observer) => {
-    curWeatherPopup.updateWeather();
+    const date = new Date(mutationList[mutationList.length-1].target.textContent.split(", ")[1]);
+
+    curWeatherPopup.updateDateWeather(date);
   });
   observerDate.observe(dateElement, observerOptions);
 
@@ -47,12 +49,14 @@ const updatePopup = async (lat, lon) => {
     if (coord) {
       console.log("HIHIIHI");
       let [currentLat, currentLong] = coord;
-      curWeatherPopup.updateWeather(currentLat, currentLong);
+      curWeatherPopup.updateLocWeather(currentLat, currentLong);
     }
   });
   observerLoc.observe(locationBox, observerOptions);
+  
+  const date = new Date(dateElement.textContent.split(", ")[1]);
 
-  curWeatherPopup.updateWeather(lat, lon)
+  curWeatherPopup.updateWeather(lat, lon, date)
   titleElement.appendChild(curWeatherPopup.weatherButton);
 };
 

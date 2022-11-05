@@ -1,13 +1,8 @@
-const makeWeather = async (currentLat, currentLong) => {
-    const dateElements = document.querySelectorAll(".ky6s2b");
-  
-    const date = new Date(dateElements[0].textContent.split(", ")[1]);
+const makeWeather = async (currentLat, currentLong, date) => {
     const month = date.getMonth() + 1;
     const day = date.getDate();
   
     const weekData = await printWeather(currentLat, currentLong);
-
-    
 
     if (!weekData) {
       return;
