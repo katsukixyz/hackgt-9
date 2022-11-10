@@ -1,5 +1,9 @@
 const oldWeatherPopup = new WeatherPopup();
 
+/**
+ * 
+ * @returns True if old event box currently exists, False if old event box does not currently exist
+ */
 const checkOldEvent = async () => {
   const box = document.querySelector(".RDlrG");
 
@@ -14,6 +18,11 @@ const checkOldEvent = async () => {
   }
 }
 
+/**
+ * Given a latitude and longitude, this function updates the existing oldWeatherPopup with the new weather data for that location
+ * @param {number} lat The latitude of the current location
+ * @param {number} lon The longitude of the current location
+ */
 const updatePopupOld = async (lat, lon) => {
   const dialogPopup = document.querySelector(".RDlrG");
   dialogPopup.style.overflowX = "visible";

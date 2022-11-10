@@ -1,6 +1,9 @@
 existsNew = false;
 existsOld = false;
 
+/**
+ * Main loop of program, checks if new and old events exist and calls appropriate update functions.s
+ */
 const listenForEvent = async () => {
     if ((await checkNewEvent()) && !existsNew) {
         const [currentLat, currentLong] = await getCurrentLocation.then((data) => data);
