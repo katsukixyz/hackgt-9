@@ -1,78 +1,42 @@
-exists = false;
-
-const curWeatherPopup = new WeatherPopup();
-
-const checkNewEvent = async () => {
-  const box = document.querySelector(".RDlrG");
-  
-  if (!box) {
-    return false;
-  }
-
-  if (box.getAttribute("data-allow-wheel-scroll") === "false") {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-const updatePopup = async (lat, lon) => {
-  const dialogPopup = document.querySelector(".RDlrG");
-  dialogPopup.style.overflowX = "visible";
-  dialogPopup.style.overflowY = "visible";
-  dialogPopup.style.position = "relative";
-  dialogPopup.appendChild(curWeatherPopup.weatherPopup);
-
-  const titleElement = document.querySelector(".mvRfff");
-  const dateElement = document.querySelector(".ky6s2b");
-  const locationBox = document.querySelector('[aria-label="Location"]');
-
-  const observerOptions = {
-    attributes: true,
-  };
-
-  const observerDate = new MutationObserver(async (mutationList, observer) => {
-    const date = new Date(mutationList[mutationList.length-1].target.textContent.split(", ")[1]);
-
-    curWeatherPopup.updateDateWeather(date);
-  });
-  observerDate.observe(dateElement, observerOptions);
-
-  const observerLoc = new MutationObserver(async (mutationList, observer) => {
-    console.log(mutationList[mutationList.length-1]);
-    let address = mutationList[mutationList.length-1].target.value.split(", ");
-    while (address.length > 4) {
-      address.shift();
-    }
-
-    let coord = await printCoords(address.join(", "));
-    if (coord) {
-      console.log("HIHIIHI");
-      let [currentLat, currentLong] = coord;
-      curWeatherPopup.updateLocWeather(currentLat, currentLong);
-    }
-  });
-  observerLoc.observe(locationBox, observerOptions);
-  
-  const date = new Date(dateElement.textContent.split(", ")[1]);
-
-  curWeatherPopup.updateWeather(lat, lon, date)
-  titleElement.appendChild(curWeatherPopup.weatherButton);
-};
+existsNew = false;
+existsOld = false;
 
 const listenForEvent = async () => {
-  if ((await checkNewEvent()) && !exists) {
-    const [currentLat, currentLong] = await getCurrentLocation.then((data) => data);
+    if ((await checkNewEvent()) && !existsNew) {
+        const [currentLat, currentLong] = await getCurrentLocation.then((data) => data);
 
-    updatePopup(currentLat, currentLong);
+        updatePopup(currentLat, currentLong);
 
-    exists = true;
-  } else {
-    if (!(await checkNewEvent())) {
-      exists = false;
+        existsNew = true;
+    } else {
+        if (!(await checkNewEvent())) {
+            existsNew = false;
+        }
     }
-  }
-  setTimeout(listenForEvent, 250);
+    if ((await checkOldEvent()) && !existsOld) {
+        const locat = document.querySelectorAll(".DN1TJ")[1];
+
+        let address = locat.textContent.split(", ");
+        while (address.length > 4) {
+            address.shift();
+        }
+        let [lat, long] = await getCurrentLocation.then((data) => data);
+        if (address.length !== 0) {
+            let coord = await printCoords(address.join(", "));
+            if (coord) {
+                [lat, long] = coord;
+            }
+        }
+
+        updatePopupOld(lat, long);
+
+        existsOld = true;
+    } else {
+        if (!(await checkOldEvent())) {
+            existsOld = false;
+        }
+    }
+    setTimeout(listenForEvent, 250);
 };
 
 listenForEvent();
