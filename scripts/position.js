@@ -1,3 +1,6 @@
+/**
+ * Checks if the popup has moved too far to the left or right, and adjusts it if necessary.
+ */
 const checkPosition = () => {
     if (document.querySelector(".RDlrG")) {
         if (document.querySelector(".weatherPopup")) {

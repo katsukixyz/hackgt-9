@@ -1,3 +1,11 @@
+/**
+ * 
+ * @param {number} currentLat Current latitude
+ * @param {number} currentLong Current longitude
+ * @param {Date} date Current date
+ * @returns HTMLDivElement containing the weather information (temperature, precipitation percentage, and icon) 
+ * for each hour of the given day
+ */
 const makeWeather = async (currentLat, currentLong, date) => {
   const month = date.getMonth() + 1;
   const day = date.getDate();
