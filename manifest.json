@@ -5,16 +5,32 @@
   "description": "🌦",
   "content_scripts": [
     {
-      "matches": ["https://calendar.google.com/calendar/u/*/r*"],
+      "matches": [
+        "https://calendar.google.com/calendar/u/*/r*"
+      ],
       "run_at": "document_idle",
-      "js": ["scripts/makeWeather.js", "scripts/weatherPopup.js", "scripts/content.js", "scripts/position.js", "scripts/content2.js", "scripts/getWeather.js"]
+      "js": [
+        "scripts/makeWeather.js",
+        "scripts/weatherPopup.js",
+        "scripts/newEvent.js",
+        "scripts/oldEvent.js",
+        "scripts/content.js",
+        "scripts/position.js",
+        "scripts/getWeather.js"
+      ]
     }
   ],
   "web_accessible_resources": [
     {
-      "matches": ["<all_urls>"],
-      "resources": ["images/*"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "images/*"
+      ]
     }
   ],
-  "permissions": ["geolocation"]
+  "permissions": [
+    "geolocation"
+  ]
 }
