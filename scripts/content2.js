@@ -21,15 +21,15 @@ const updatePopupOld = async (lat, lon) => {
   dialogPopup.style.overflowX = "visible";
   dialogPopup.style.overflowY = "visible";
   dialogPopup.style.position = "relative";
-  dialogPopup.appendChild(curWeatherPopup.weatherPopup);
+  dialogPopup.appendChild(oldWeatherPopup.weatherPopup);
 
   const titleElement = document.querySelector(".wv9rPe");
   const dateElement = document.querySelector(".DN1TJ");
   
   const date = new Date(dateElement.textContent.split(", ")[1].split("⋅")[0]);
 
-  curWeatherPopup.updateWeather(lat, lon, date)
-  titleElement.appendChild(curWeatherPopup.weatherButton);
+  oldWeatherPopup.updateWeather(lat, lon, date)
+  titleElement.appendChild(oldWeatherPopup.weatherButton);
 };
 
 const listenForOldEvent = async () => {
