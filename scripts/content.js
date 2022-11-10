@@ -41,5 +41,11 @@ const listenForEvent = async () => {
     }
     setTimeout(listenForEvent, 250);
 };
-
+/*chrome.notifications.create('test', {
+    type: 'basic',
+    iconUrl: 'images/button.png',
+    title: 'Test Message',
+    message: 'You are awesome!',
+    priority: 2
+});*/
 listenForEvent();
