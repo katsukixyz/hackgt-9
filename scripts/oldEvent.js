@@ -31,7 +31,7 @@ const updatePopupOld = async (lat, lon) => {
   dialogPopup.appendChild(oldWeatherPopup.weatherPopup);
 
   const titleElement = document.querySelector(".wv9rPe");
-  const dateElement = document.querySelector(".DN1TJ");
+  const dateElement = document.querySelector(".AzuXid");
 
   const date = new Date(dateElement.textContent.split(", ")[1].split("⋅")[0]);
 

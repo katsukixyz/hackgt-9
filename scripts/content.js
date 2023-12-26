@@ -17,9 +17,12 @@ const listenForEvent = async () => {
         }
     }
     if ((await checkOldEvent()) && !existsOld) {
-        const locat = document.querySelectorAll(".DN1TJ")[1];
-
+        //const locat = document.querySelectorAll(".DN1TJ")[1];
+        const locat = document.querySelectorAll(".AzuXid")[1];
+        
+        console.log(locat)
         let address = locat.textContent.split(", ");
+        console.log(address)
         while (address.length > 4) {
             address.shift();
         }

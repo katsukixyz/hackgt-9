@@ -33,7 +33,7 @@ const updatePopup = async (lat, lon) => {
   const titleElement = document.querySelector(".mvRfff");
   const dateElement = document.querySelector(".ky6s2b");
   const locationBox = document.querySelector('[aria-label="Location"]');
-
+  //console.log(lat.toString() + " " + lon.toString())
   const observerOptions = {
     attributes: true,
   };
